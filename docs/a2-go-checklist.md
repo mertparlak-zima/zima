@@ -4,6 +4,11 @@ Execution contract: [migration runbook](migration-2026-10.md).
 Evidence: [A1 audit](a1-readiness.md), [policy packet](policy-patch-pack.md),
 [local state](local-state.md). This is a status record, not permission to cut over.
 
+This matrix describes the full workspace transition. The authorized four-project
+[partial scope](partial-migration-2026-10-23.md) keeps DriveTrace and shared global
+infrastructure deferred. Their future checks are not claimed PASS or waived;
+active-project copy/activation still requires its scoped integrity evidence.
+
 ## Ready to start
 
 | Requirement | Current evidence / remaining work |

@@ -8,6 +8,11 @@ creates a merge commit. See [workspace rules](../AGENTS.md).
 - `zima.ps1` - the workspace CLI: status, repo card, issues, clone, sync, update,
   new-repo, verify, gen, runners, locks. Windows PowerShell 5.1 target (pwsh 7 not
   installed on this host); file is UTF-8 WITH BOM.
+- A `deferred` member is metadata only. Explicit clone/sync/update/issues targets
+  refuse before native validation; bulk operations skip it. Status uses null/uninspected
+  source fields and a DEFERRED reason. Normal verification explicitly reports excluded
+  source/Git/docs/preamble checks; active members retain every existing check.
+  Runner queries are scoped to each active container; excluded runners are not inspected.
 - `migration-rehearsal.ps1` - synthetic copy/hash/failure/rollback rehearsal; does
   not perform production cutover or operate real member repositories.
 - `backup-local-state.ps1` - copy-only A1 external backup; run only after the leader's
@@ -45,6 +50,8 @@ creates a merge commit. See [workspace rules](../AGENTS.md).
   Run after ANY change to zima.ps1 or repos.schema.json.
 - `tests/backup-tests.ps1` - isolated synthetic binary/ADS/ACL/copy/restore failures;
   no production sources or D: writes. Run after any backup-script change.
+- `tests/deferred-tests.ps1` - synthetic exclusion/default/schema/generation/CLI and
+  no-probe regressions. It never accesses actual member sources, runners or networks.
 - Exit contract for verify: 0 PASS / 2 PASS_WITH_WARNINGS / 1 FAIL.
 - `verify -Pending` defers absent member checks only; generated drift remains an error.
   Pending is accepted only with exact `A1` in `.local-state/migration/PHASE`, or no
@@ -64,8 +71,9 @@ creates a merge commit. See [workspace rules](../AGENTS.md).
   Defaults normalize omitted repo owner/branch; explicit overrides are preserved.
 - Paths are canonical Windows paths with an existing-ancestor reparse check. Repo
   commands verify the actual Git root and origin before acting. `sync` only fetches.
-- `gen` includes every registered repo even when absent and writes relative portable
-  workspace paths, deterministic BOM-less UTF-8/LF outputs without timestamps.
+- `gen` catalogs every registered repo, explicitly labels deferred metadata and includes
+  only active entries in the portable workspace (even if their adoption is pending).
+  Outputs are deterministic BOM-less UTF-8/LF without timestamps.
 - `locks acquire|release <resource> -Owner <token>` uses atomic creation and a local
   named mutex, explicit ownership and traversal-safe names. Keep the owner token for
   release; stale locks require a human decision. `locks list` never creates directories.

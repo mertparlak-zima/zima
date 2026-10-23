@@ -56,15 +56,36 @@ function Assert-ZimaPendingAllowed {
   if($phase -cne 'A1'){throw 'Pending is allowed only for A1 (or a fresh clone without a phase marker)'}
  }
 }
-function Get-ZimaSafePath {
+function Get-ZimaDeclaredPath {
  param([string]$Root,[string]$Relative,[switch]$AllowRoot)
+ # Pure metadata validation: this helper never probes a declared member path.
  if([string]::IsNullOrWhiteSpace($Root) -or [string]::IsNullOrWhiteSpace($Relative)){throw 'Empty path refused'}
  $base=[IO.Path]::GetFullPath($Root).TrimEnd('\','/')
  if([IO.Path]::IsPathRooted($Relative) -or $Relative -match '(^|[\\/])\.\.([\\/]|$)' -or $Relative -match ':'){throw 'Absolute/traversal path refused'}
  $full=[IO.Path]::GetFullPath((Join-Path $base $Relative))
  if($full -eq $base){if(!$AllowRoot){throw 'Root path refused'}}elseif(!$full.StartsWith($base+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Path escapes root'}
- # Fail closed on junctions/symlinks at every existing ancestor, including workspace.
+ return $full
+}
+function Get-ZimaSafePath {
+ param([string]$Root,[string]$Relative,[switch]$AllowRoot)
+ $full=Get-ZimaDeclaredPath $Root $Relative -AllowRoot:$AllowRoot
+ # Active paths fail closed on junctions/symlinks at every existing ancestor.
  $p=$full;while($p){if(Test-Path -LiteralPath $p){$item=Get-Item -LiteralPath $p -Force;if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw "Reparse ancestor refused: $p"}};$parent=[IO.Path]::GetDirectoryName($p);if($parent -eq $p){break};$p=$parent};return $full
+}
+function Test-ZimaRepoDeferred {
+ param([hashtable]$Repo)
+ return $Repo.ContainsKey('deferred') -and $Repo['deferred'] -is [bool] -and $Repo['deferred']
+}
+function Assert-ZimaRequestedTargetActive {
+ param([AllowNull()]$Manifest,[string]$Command,[string[]]$Rest)
+ # Refuse explicit excluded targets before full validation can launch even a
+ # metadata-only native command. Unvalidated/malformed shapes fail later normally.
+ if($Manifest -isnot [Collections.IDictionary] -or !$Manifest.Contains('repos')){return}
+ $target=$null
+ if($Command -in @('clone','sync','update')){$a=Get-ZimaArguments $Rest @('-all');if($a.Positionals.Count -eq 1){$target=$a.Positionals[0]}}
+ elseif($Command -eq 'issues'){$a=Get-ZimaArguments $Rest @('-r','-repo','-stale','-json') @('-r','-repo','-stale');if($a.Options.ContainsKey('-r')){$target=$a.Options['-r']};if($a.Options.ContainsKey('-repo')){$target=$a.Options['-repo']}}
+ if(!$target){return}
+ foreach($r in $Manifest['repos']){if($r -is [hashtable] -and $r['name'] -ceq $target -and (Test-ZimaRepoDeferred $r)){throw "$target : DEFERRED; operation refused ($($r['defer_reason']))"}}
 }
 function Test-ZimaSchema {
  param([AllowNull()]$Value,[hashtable]$Schema,[hashtable]$Document=$Schema,[string]$At='$')
@@ -95,7 +116,7 @@ function Test-ZimaSchemaDefinition {
 function Resolve-ZimaDefaults {
  param([hashtable]$Manifest)
  $copy=ConvertTo-HashtableDeep ($Manifest|ConvertTo-Json -Depth 40|ConvertFrom-Json)
- foreach($r in $copy['repos']){if(!$r.ContainsKey('owner_type')){$r['owner_type']=$copy['defaults']['owner_type']};if(!$r.ContainsKey('default_branch')){$r['default_branch']=$copy['defaults']['branch']};if(!$r.ContainsKey('runner')){$r['runner']=$null}};return $copy
+ foreach($r in $copy['repos']){if(!$r.ContainsKey('owner_type')){$r['owner_type']=$copy['defaults']['owner_type']};if(!$r.ContainsKey('default_branch')){$r['default_branch']=$copy['defaults']['branch']};if(!$r.ContainsKey('runner')){$r['runner']=$null};if(!$r.ContainsKey('deferred')){$r['deferred']=$false};if(!$r.ContainsKey('defer_reason')){$r['defer_reason']=$null}};return $copy
 }
 function Invoke-ZimaNative {
  param([string]$Tool,[string[]]$Arguments)
@@ -126,12 +147,13 @@ function Invoke-ZimaManifestValidation {
    if($seenName.ContainsKey($n)){$errors+="duplicate repo name: $n"};$seenName[$n]=1
    if($seenPath.ContainsKey($p)){$errors+="duplicate path: $p"};$seenPath[$p]=1
    if($p -cne "projects/$n"){$errors+="repo ${n}: path basename must equal name"}
-   try{$null=Get-ZimaSafePath $ZimaRoot $p}catch{$errors+="repo ${n}: unsafe path ($($_.Exception.Message))"}
+   if((Test-ZimaRepoDeferred $r) -and [string]::IsNullOrWhiteSpace($r['defer_reason'])){$errors+="repo ${n}: deferred requires a nonempty defer_reason"}
+   try{if(Test-ZimaRepoDeferred $r){$null=Get-ZimaDeclaredPath $ZimaRoot $p}else{$null=Get-ZimaSafePath $ZimaRoot $p}}catch{$errors+="repo ${n}: unsafe path ($($_.Exception.Message))"}
    $branch=Invoke-ZimaNative git @('check-ref-format','--branch',$r['default_branch']);if($branch.Code -ne 0 -or $r['default_branch'].StartsWith('-')){$errors+="repo ${n}: invalid default_branch"}
    $run=$r['runner'];if(@($r['ci_workflows']).Count -gt 0 -and $null -eq $run){$errors+="repo ${n}: ci_workflows has no runner/label"}
    if($null -ne $run){foreach($pair in @(@('label',$seenLabel),@('container',$seenContainer))){$field=$pair[0];$seen=$pair[1];$v=$run[$field];if($seen.ContainsKey($v)){$errors+="duplicate runner ${field}: $v"};$seen[$v]=1}}
    $paths=@($r['docs']['readme'],$r['docs']['agents'],$r['docs']['skills'])+@($r['docs']['key'])+@($r['skills_locations'])
-   foreach($rel in $paths){if($null -ne $rel){try{$null=Get-ZimaSafePath (Join-Path $ZimaRoot $p) $rel}catch{$errors+="repo ${n}: unsafe doc/skill path"}}}
+   foreach($rel in $paths){if($null -ne $rel){try{if(Test-ZimaRepoDeferred $r){$null=Get-ZimaDeclaredPath (Join-Path $ZimaRoot $p) $rel}else{$null=Get-ZimaSafePath (Join-Path $ZimaRoot $p) $rel}}catch{$errors+="repo ${n}: unsafe doc/skill path"}}}
   }
   foreach($t in $m['third_party']){
    $n=$t['name'];if($seenName.ContainsKey($n)){$errors+="third_party ${n}: duplicate name"};$seenName[$n]=1
@@ -142,9 +164,10 @@ function Invoke-ZimaManifestValidation {
 }
 function Get-ZimaRepoState {
  param([hashtable]$Repo,[string]$ZimaRoot)
- $s=[ordered]@{name=$Repo['name'];dir=$Repo['path'];present=$false;isGit=$false;originOk=$false;branch='';expectedBranch=$Repo['default_branch'];detached=$false;staged=0;unstaged=0;untracked=0;conflicts=0;stashes=0;ahead=$null;behind=$null;upstream=$null;error=$null}
+ $s=[ordered]@{name=$Repo['name'];dir=$Repo['path'];deferred=$false;defer_reason=$null;inspected=$false;present=$false;isGit=$false;originOk=$false;branch='';expectedBranch=$Repo['default_branch'];detached=$false;staged=0;unstaged=0;untracked=0;conflicts=0;stashes=0;ahead=$null;behind=$null;upstream=$null;error=$null}
  try{
-  $dir=Get-ZimaSafePath $ZimaRoot $Repo['path'];if(!(Test-Path -LiteralPath $dir -PathType Container)){return $s};$s.present=$true
+  if(Test-ZimaRepoDeferred $Repo){$s.deferred=$true;$s.defer_reason=$Repo['defer_reason'];$s.present=$null;$s.isGit=$null;$s.originOk=$null;$s.branch=$null;$s.detached=$null;foreach($key in @('staged','unstaged','untracked','conflicts','stashes')){$s[$key]=$null};return $s}
+  $s.inspected=$true;$dir=Get-ZimaSafePath $ZimaRoot $Repo['path'];if(!(Test-Path -LiteralPath $dir -PathType Container)){return $s};$s.present=$true
   $null=Get-ZimaSafePath $dir '.git';$g=Invoke-ZimaNative git @('-C',$dir,'rev-parse','--show-toplevel');if($g.Code -ne 0){return $s};if([IO.Path]::GetFullPath(($g.Output -join '').Replace('/','\')).TrimEnd('\') -ine $dir.TrimEnd('\')){return $s};$s.isGit=$true
   $g=Invoke-ZimaNative git @('-C',$dir,'remote','get-url','origin');$s.originOk=($g.Code -eq 0 -and ($g.Output -join '') -ceq $Repo['github'])
   $g=Invoke-ZimaNative git @('-C',$dir,'symbolic-ref','--quiet','--short','HEAD');if($g.Code -eq 0){$s.branch=$g.Output -join ''}else{$s.detached=$true;$s.branch='(detached)'}
@@ -169,14 +192,14 @@ function Test-FolderReadmes {
 function ConvertTo-ZimaCell {param([AllowNull()]$Value);return ([string]$Value).Replace('|','\|').Replace("`r",' ').Replace("`n",' ')}
 function Get-ZimaGenerated {
  param([hashtable]$Manifest,[string]$ZimaRoot)
- $lines=@('# repos.md - workspace index (GENERATED - do not edit by hand)','','Generated by `zima gen` from `repos.json`. Cards live in `repos/<name>.md`.','','| Repo | Product | Dir | Stack | CI / Runner | Card |','|---|---|---|---|---|---|')
- foreach($r in $Manifest['repos']){$ci='none';if($null -ne $r['runner']){$ci=($r['ci_workflows'] -join ', ')+' / '+$r['runner']['container']};$cells=@($r['name'],$r['product'],$r['path'],$r['stack'],$ci,"[card]($($r['name']).md)")|ForEach-Object{ConvertTo-ZimaCell $_};$lines+=('| '+($cells -join ' | ')+' |')}
- $reg=@('| Repo | Container | Label today | Label target | Lifecycle | Compose |','|---|---|---|---|---|---|')
- foreach($r in $Manifest['repos']){if($null -eq $r['runner']){continue};$run=$r['runner'];$today=$run['label'];$target=$run['label'];if($run['label_status'] -eq 'pending-migration'){$today='(shared pool - no repo label yet)'};if($run['label_status'] -eq 'rename-pending-target-call-tracker'){$target='call-tracker'};$cells=@($r['name'],$run['container'],$today,$target,$run['lifecycle'],$run['compose'])|ForEach-Object{ConvertTo-ZimaCell $_};$reg+=('| '+($cells -join ' | ')+' |')}
+ $lines=@('# repos.md - workspace index (GENERATED - do not edit by hand)','','Generated by `zima gen` from `repos.json`. Cards live in `repos/<name>.md`.','','| Repo | State | Product | Dir | Stack | CI / Runner | Card |','|---|---|---|---|---|---|---|')
+ foreach($r in $Manifest['repos']){$ci='none';if($null -ne $r['runner']){$ci=($r['ci_workflows'] -join ', ')+' / '+$r['runner']['container']};$membership='active';if(Test-ZimaRepoDeferred $r){$membership='DEFERRED: '+$r['defer_reason']};$cells=@($r['name'],$membership,$r['product'],$r['path'],$r['stack'],$ci,"[card]($($r['name']).md)")|ForEach-Object{ConvertTo-ZimaCell $_};$lines+=('| '+($cells -join ' | ')+' |')}
+ $reg=@('| Repo | State | Container | Label today | Label target | Lifecycle | Compose |','|---|---|---|---|---|---|---|')
+ foreach($r in $Manifest['repos']){if($null -eq $r['runner']){continue};$run=$r['runner'];$today=$run['label'];$target=$run['label'];if($run['label_status'] -eq 'pending-migration'){$today='(shared pool - no repo label yet)'};if($run['label_status'] -eq 'rename-pending-target-call-tracker'){$target='call-tracker'};$membership='active';if(Test-ZimaRepoDeferred $r){$membership='DEFERRED'};$cells=@($r['name'],$membership,$run['container'],$today,$target,$run['lifecycle'],$run['compose'])|ForEach-Object{ConvertTo-ZimaCell $_};$reg+=('| '+($cells -join ' | ')+' |')}
  $p=Get-ZimaSafePath $ZimaRoot 'docs/runners.md';$content=Get-Content -LiteralPath $p -Raw -Encoding UTF8;$pattern='(?s)<!-- BEGIN GENERATED RUNNER REGISTRY -->.*?<!-- END GENERATED RUNNER REGISTRY -->'
  if([regex]::Matches($content,$pattern).Count -ne 1){throw 'Exactly one generated runner registry block required'}
  $block="<!-- BEGIN GENERATED RUNNER REGISTRY -->`n"+($reg -join "`n")+"`n<!-- END GENERATED RUNNER REGISTRY -->";$content=[regex]::Replace($content,$pattern,[Text.RegularExpressions.MatchEvaluator]{param($match) $block}).Replace("`r`n","`n").Replace("`r","`n")
- $folders=@([ordered]@{name='zima';path='.'});foreach($r in $Manifest['repos']){$folders+=([ordered]@{name=$r['name'];path=$r['path']})}
+ $folders=@([ordered]@{name='zima';path='.'});foreach($r in $Manifest['repos']){if(!(Test-ZimaRepoDeferred $r)){$folders+=([ordered]@{name=$r['name'];path=$r['path']})}}
  $ws=[ordered]@{folders=$folders;settings=[ordered]@{'search.exclude'=[ordered]@{'**/node_modules'=$true;'**/build'=$true;'**/.gradle'=$true}}}
  $workspaceJson=($ws|ConvertTo-Json -Depth 8).Replace("`r`n","`n").Replace("`r","`n")+"`n"
  return [ordered]@{'repos/repos.md'=($lines -join "`n")+"`n";'docs/runners.md'=$content;'zima.code-workspace'=$workspaceJson}
@@ -291,6 +314,7 @@ function Invoke-ZimaVerify {
  foreach($r in $m['repos']){
   $card=Get-ZimaSafePath $ZimaRoot ('repos/'+$r['name']+'.md');if(!(Test-Path -LiteralPath $card)){$errors+="repo $($r['name']): card missing";continue};$text=Get-Content -LiteralPath $card -Raw -Encoding UTF8
   if($text -notmatch '\]\(\.\./AGENTS\.md\)'){$errors+="repo $($r['name']): card must link ../AGENTS.md"}
+  if(Test-ZimaRepoDeferred $r){if($text -notmatch '(?i)DEFERRED'){$errors+="repo $($r['name']): card must declare DEFERRED"};$info.Add("DEFERRED $($r['name']): $($r['defer_reason']); source/Git/docs/preamble not inspected");continue}
   $links=@($r['docs']['readme'],$r['docs']['agents'],$r['docs']['skills'])+@($r['docs']['key']);foreach($doc in $links){if($null -eq $doc){continue};$expected='../'+$r['path']+'/'+$doc;if(!$text.Contains(']('+$expected+')')){$errors+="repo $($r['name']): card missing doc link $doc"}}
   $st=Get-ZimaRepoState $r $ZimaRoot;if(!$st.present -and $Pending){$info.Add("A1 deferred member checks: $($r['name']) (Pending; not cutover acceptance)");continue}
   if(!$st.present -or !$st.isGit -or !$st.originOk -or $st.error){$errors+="repo $($r['name']): missing, unsafe, non-root, origin mismatch or git failure";continue}
@@ -327,7 +351,7 @@ function Get-ZimaArguments {
 }
 function Get-ZimaTargets {
  param([hashtable]$Manifest,[string[]]$Names,[switch]$All)
- if($All -and $Names.Count){throw 'Choose -All or one repo name'};if(!$All -and $Names.Count -ne 1){throw 'Exactly one repo name (or -All) required'};if($All){return ,@($Manifest['repos'])};$r=@($Manifest['repos']|Where-Object{$_['name'] -ceq $Names[0]});if($r.Count -ne 1){throw 'Unknown repo target'};return ,$r
+ if($All -and $Names.Count){throw 'Choose -All or one repo name'};if(!$All -and $Names.Count -ne 1){throw 'Exactly one repo name (or -All) required'};if($All){return ,@($Manifest['repos']|Where-Object{!(Test-ZimaRepoDeferred $_)})};$r=@($Manifest['repos']|Where-Object{$_['name'] -ceq $Names[0]});if($r.Count -ne 1){throw 'Unknown repo target'};if(Test-ZimaRepoDeferred $r[0]){throw ($r[0]['name']+': DEFERRED; operation refused ('+$r[0]['defer_reason']+')')};return ,$r
 }
 function Add-ZimaRepo {
  param([hashtable]$Manifest,[hashtable]$Options,[string]$ZimaRoot)
@@ -358,18 +382,19 @@ zima.ps1 - workspace orchestration (PS 5.1)
   new-repo -Name <slug> -Github <url> -Product <p> -Stack <s> [-Branch <b>]
   verify [-Fast|-Full] [-Pending] [--json]
   gen                                deterministic generated artifacts
-  runners                            read-only registered container status
+  runners                            read-only active container status only
   locks list [--json]
   locks acquire|release <resource> -Owner <token>
+Deferred members are metadata only: explicit operational targets refuse; bulk operations skip.
 Exit: 0 success, 1 failure, 2 verification warnings. Pending never proves cutover.
 '@;exit 0}
-  $m=Read-ZimaManifest (Join-Path $root 'repos.json');$v=Invoke-ZimaManifestValidation $m $root;if($v.Errors.Count){throw ('Invalid manifest: '+($v.Errors -join '; '))};$m=Resolve-ZimaDefaults $m
+  $m=Read-ZimaManifest (Join-Path $root 'repos.json');Assert-ZimaRequestedTargetActive $m $cmd $Rest;$v=Invoke-ZimaManifestValidation $m $root;if($v.Errors.Count){throw ('Invalid manifest: '+($v.Errors -join '; '))};$m=Resolve-ZimaDefaults $m
   switch($cmd){
    'status'{
     $a=Get-ZimaArguments $Rest @('-pending','-q','-quiet','-json');if($a.Positionals.Count){throw 'Unexpected status argument'};if($a.Options.ContainsKey('-pending')){Assert-ZimaPendingAllowed $root};$states=@();$bad=0
-    foreach($r in $m['repos']){$st=Get-ZimaRepoState $r $root;$states+=,$st;if((!$st.present -and !$a.Options.ContainsKey('-pending')) -or ($st.present -and (!$st.isGit -or !$st.originOk -or $st.error))){$bad++}}
+    foreach($r in $m['repos']){$st=Get-ZimaRepoState $r $root;$states+=,$st;if(!$st.deferred -and ((!$st.present -and !$a.Options.ContainsKey('-pending')) -or ($st.present -and (!$st.isGit -or !$st.originOk -or $st.error)))){$bad++}}
     $known=@($m['repos']|ForEach-Object{$_['name']});$orphans=@();$proj=Get-ZimaSafePath $root 'projects';if(Test-Path -LiteralPath $proj){$orphans=@(Get-ChildItem -LiteralPath $proj -Directory -Force|Where-Object{$known -notcontains $_.Name -and $_.Name -ne '.shared'}|ForEach-Object{$_.Name})}
-    if($a.Options.ContainsKey('-json')){[ordered]@{repos=$states;orphans=$orphans;pending=$a.Options.ContainsKey('-pending')}|ConvertTo-Json -Depth 8}else{foreach($st in $states){if(($a.Options.ContainsKey('-q') -or $a.Options.ContainsKey('-quiet')) -and $st.present -and $st.isGit -and $st.originOk -and !$st.error -and ($st.staged+$st.unstaged+$st.untracked+$st.stashes) -eq 0 -and $st.branch -eq $st.expectedBranch){continue};Write-Host ("{0}: present={1} git={2} origin={3} branch={4} staged/unstaged/untracked/conflicts={5}/{6}/{7}/{8} upstream={9} ahead/behind={10}/{11}" -f $st.name,$st.present,$st.isGit,$st.originOk,$st.branch,$st.staged,$st.unstaged,$st.untracked,$st.conflicts,$st.upstream,$st.ahead,$st.behind)};if($orphans.Count){Write-Host ('orphans: '+($orphans -join ', '))}};if($bad){exit 1};exit 0
+    if($a.Options.ContainsKey('-json')){[ordered]@{repos=$states;orphans=$orphans;pending=$a.Options.ContainsKey('-pending')}|ConvertTo-Json -Depth 8}else{foreach($st in $states){if($st.deferred){Write-Host ($st.name+': DEFERRED ('+$st.defer_reason+'; no source probe)');continue};if(($a.Options.ContainsKey('-q') -or $a.Options.ContainsKey('-quiet')) -and $st.present -and $st.isGit -and $st.originOk -and !$st.error -and ($st.staged+$st.unstaged+$st.untracked+$st.stashes) -eq 0 -and $st.branch -eq $st.expectedBranch){continue};Write-Host ("{0}: present={1} git={2} origin={3} branch={4} staged/unstaged/untracked/conflicts={5}/{6}/{7}/{8} upstream={9} ahead/behind={10}/{11}" -f $st.name,$st.present,$st.isGit,$st.originOk,$st.branch,$st.staged,$st.unstaged,$st.untracked,$st.conflicts,$st.upstream,$st.ahead,$st.behind)};if($orphans.Count){Write-Host ('orphans: '+($orphans -join ', '))}};if($bad){exit 1};exit 0
    }
    'verify'{
     $a=Get-ZimaArguments $Rest @('-fast','-full','-pending','-json');if($a.Positionals.Count -or ($a.Options.ContainsKey('-fast') -and $a.Options.ContainsKey('-full'))){throw 'Choose Fast or Full'};$mode='fast';if($a.Options.ContainsKey('-full')){$mode='full'};$res=Invoke-ZimaVerify -Mode $mode -ZimaRoot $root -Pending:($a.Options.ContainsKey('-pending'))
@@ -378,7 +403,7 @@ Exit: 0 success, 1 failure, 2 verification warnings. Pending never proves cutove
    'gen'{$a=Get-ZimaArguments $Rest @();if($a.Positionals.Count){throw 'gen accepts no arguments'};Invoke-ZimaGen $m $root;Write-Host 'generated repos index, runner registry and portable workspace';exit 0}
    'issues'{
     $a=Get-ZimaArguments $Rest @('-r','-repo','-stale','-json') @('-r','-repo','-stale');if($a.Positionals.Count){throw 'Unexpected issues argument'};if($a.Options.ContainsKey('-r') -and $a.Options.ContainsKey('-repo')){throw 'Choose -R or -Repo'};$filter=$null;if($a.Options.ContainsKey('-r')){$filter=$a.Options['-r']};if($a.Options.ContainsKey('-repo')){$filter=$a.Options['-repo']}
-    $targets=@();foreach($r in $m['repos']){if(!$filter -or $r['name'] -ceq $filter){$targets+=@{name=$r['name'];slug=($r['github'] -replace '^https://github\.com/','' -replace '\.git$','')}}};if(!$filter -or $filter -ceq 'zima'){$targets+=@{name='zima';slug=$m['org']+'/zima'}};if(!$targets.Count){throw 'Unknown issues target'}
+    $targets=@();foreach($r in $m['repos']){if(!(Test-ZimaRepoDeferred $r) -and (!$filter -or $r['name'] -ceq $filter)){$targets+=@{name=$r['name'];slug=($r['github'] -replace '^https://github\.com/','' -replace '\.git$','')}}};if(!$filter -or $filter -ceq 'zima'){$targets+=@{name='zima';slug=$m['org']+'/zima'}};if(!$targets.Count){throw 'Unknown issues target'}
     $query=@();if($a.Options.ContainsKey('-stale')){$days=0;if(![int]::TryParse($a.Options['-stale'],[ref]$days) -or $days -lt 1 -or $days -gt 36500){throw 'Stale must be 1..36500 days'};$query=@('--search',('updated:<='+[DateTime]::UtcNow.AddDays(-$days).ToString('yyyy-MM-dd')))}
     $rows=@();foreach($t in $targets){$g=Invoke-ZimaNative gh (@('issue','list','-R',$t.slug,'--json','number,title,milestone,updatedAt','--limit','1000')+$query);if($g.Code -ne 0){throw "gh issue list failed: $($t.name) (output withheld)"};$parsed=($g.Output -join "`n")|ConvertFrom-Json;$issues=@();foreach($issue in $parsed){$issues+=,$issue};$rows+=@{repo=$t.name;issues=$issues}}
     if($a.Options.ContainsKey('-json')){ConvertTo-Json -InputObject $rows -Depth 12}else{foreach($row in $rows){Write-Host ('== '+$row.repo+' ==');foreach($issue in $row.issues){Write-Host ("#{0} {1} (updated {2})" -f $issue.number,$issue.title,$issue.updatedAt)}}};exit 0
@@ -390,8 +415,8 @@ Exit: 0 success, 1 failure, 2 verification warnings. Pending never proves cutove
    }
    'new-repo'{$a=Get-ZimaArguments $Rest @('-name','-github','-product','-stack','-branch') @('-name','-github','-product','-stack','-branch');if($a.Positionals.Count){throw 'Unexpected new-repo argument'};Add-ZimaRepo $m $a.Options $root;Write-Host 'Added manifest/card and regenerated outputs; finish onboarding and verify before commit.';exit 0}
    'locks'{$a=Get-ZimaArguments $Rest @('-owner','-json') @('-owner');if($a.Positionals.Count -lt 1 -or $a.Positionals.Count -gt 2){throw 'locks list|acquire|release <resource> -Owner <token>'};$action=$a.Positionals[0];$resource=$null;if($a.Positionals.Count -eq 2){$resource=$a.Positionals[1]};$owner=$null;if($a.Options.ContainsKey('-owner')){$owner=$a.Options['-owner']};if($action -eq 'list' -and ($resource -or $owner)){throw 'locks list has no resource/owner'};$rows=@(Invoke-ZimaLock $root $action $resource $owner);if($a.Options.ContainsKey('-json')){ConvertTo-Json -InputObject $rows -Depth 5}else{if($action -eq 'list'){if($rows.Count){$rows|ForEach-Object{Write-Host ($_|ConvertTo-Json -Compress)}}else{Write-Host 'no locks held'}}else{Write-Host ($action+': '+$resource)}};exit 0}
-   'runners'{$a=Get-ZimaArguments $Rest @();if($a.Positionals.Count){throw 'Unexpected runners argument'};$g=Invoke-ZimaNative docker @('ps','-a','--format','{{.Names}}|{{.State}}|{{.Status}}');if($g.Code -ne 0){throw 'Docker engine unavailable; do not start solely for check'};foreach($r in $m['repos']){if($null -ne $r['runner']){$prefix=$r['runner']['container']+'|';$row=@($g.Output|Where-Object{$_.StartsWith($prefix)});if($row.Count){Write-Host ($row -join "`n")}else{Write-Host ($r['runner']['container']+'|absent')}}};exit 0}
-   default{$r=@($m['repos']|Where-Object{$_['name'] -ceq $Command});if($r.Count -ne 1){throw "Unknown command/repo: $Command"};if($Rest.Count){throw 'Repo card accepts no options'};$card=Get-ZimaSafePath $root ('repos/'+$Command+'.md');Get-Content -LiteralPath $card -Encoding UTF8;$st=Get-ZimaRepoState $r[0] $root;$st|ConvertTo-Json -Depth 5;if(!$st.present -or !$st.isGit -or !$st.originOk -or $st.error){exit 1};exit 0}
+   'runners'{$a=Get-ZimaArguments $Rest @();if($a.Positionals.Count){throw 'Unexpected runners argument'};foreach($r in $m['repos']){if($null -eq $r['runner']){continue};$container=$r['runner']['container'];if(Test-ZimaRepoDeferred $r){Write-Host ($container+'|DEFERRED (not probed)');continue};$g=Invoke-ZimaNative docker @('ps','-a','--filter',('name=^/'+[regex]::Escape($container)+'$'),'--format','{{.Names}}|{{.State}}|{{.Status}}');if($g.Code -ne 0){throw 'Docker engine unavailable; do not start solely for check'};$prefix=$container+'|';$row=@($g.Output|Where-Object{$_.StartsWith($prefix)});if($row.Count){Write-Host ($row -join "`n")}else{Write-Host ($container+'|absent')}};exit 0}
+   default{$r=@($m['repos']|Where-Object{$_['name'] -ceq $Command});if($r.Count -ne 1){throw "Unknown command/repo: $Command"};if($Rest.Count){throw 'Repo card accepts no options'};$card=Get-ZimaSafePath $root ('repos/'+$Command+'.md');Get-Content -LiteralPath $card -Encoding UTF8;$st=Get-ZimaRepoState $r[0] $root;$st|ConvertTo-Json -Depth 5;if($st.deferred){exit 0};if(!$st.present -or !$st.isGit -or !$st.originOk -or $st.error){exit 1};exit 0}
   }
  }catch{[Console]::Error.WriteLine('ERROR: '+$_.Exception.Message);exit 1}
 }

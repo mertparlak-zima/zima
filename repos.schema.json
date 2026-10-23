@@ -32,6 +32,8 @@
         "path": { "type": "string", "pattern": "^projects/[a-z0-9][a-z0-9-]*$", "description": "relative to zima root; must not contain .. or backslash" },
         "owner_type": { "enum": ["ours"] },
         "default_branch": { "type": "string", "minLength": 1 },
+        "deferred": { "type": "boolean", "description": "Optional, default false. True keeps planned metadata only; source/Git/network/runner probes and operational commands are excluded." },
+        "defer_reason": { "type": ["string", "null"], "minLength": 1, "description": "A non-whitespace reason is required when deferred is true." },
         "stack": { "type": "string", "minLength": 1 },
         "runner": {
           "oneOf": [

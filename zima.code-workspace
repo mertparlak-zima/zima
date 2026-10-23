@@ -5,10 +5,6 @@
                         "path":  "."
                     },
                     {
-                        "name":  "drive-trace",
-                        "path":  "projects/drive-trace"
-                    },
-                    {
                         "name":  "coin-tracker",
                         "path":  "projects/coin-tracker"
                     },

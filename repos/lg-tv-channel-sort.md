@@ -13,7 +13,8 @@
 
 ## Entry documents
 
-- [README](../projects/lg-tv-channel-sort/README.md) — the rule set (device-verified; a minimal AGENTS with workspace context is an A2 gate)
+- [README](../projects/lg-tv-channel-sort/README.md) — the device-verified rule set
+- [AGENTS.md](../projects/lg-tv-channel-sort/AGENTS.md) — reviewed workspace routing; applied during partial adoption
 - Main skill (read fully before ANY TLL edit): [lg-tll-channel-editing](../projects/lg-tv-channel-sort/.claude/skills/lg-tll-channel-editing/SKILL.md)
 - References: [file-format](../projects/lg-tv-channel-sort/.claude/skills/lg-tll-channel-editing/references/file-format.md) · [verification](../projects/lg-tv-channel-sort/.claude/skills/lg-tll-channel-editing/references/verification.md)
 - Device profile: [lg-42lb652v-tv](../projects/lg-tv-channel-sort/.claude/skills/lg-42lb652v-tv/SKILL.md)

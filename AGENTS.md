@@ -13,7 +13,9 @@ history, CI and rules. zima provides surface-level oversight only.
 1. Read this file fully.
 2. If target is unknown, read `repos/` cards or run `powershell -File scripts/zima.ps1
    status -q` (A1 only: add `-Pending`; never use Pending during/after cutover).
-3. Read the target repo's card: `repos/<name>.md`.
+3. Read the target repo's card: `repos/<name>.md`. A manifest member marked `deferred`
+   is metadata only: stop target operations, leave its source/runner untouched and
+   respect its recorded reason. Bulk commands skip it; it is absent from the workspace.
 4. Run `powershell -File scripts/zima.ps1 issues -R <name>` and read the newest status
    comment of the relevant issues — that is "where we left off".
 5. If the repo directory is missing: clone it with `zima.ps1 clone <name>`. EXCEPTION: if
@@ -26,7 +28,8 @@ history, CI and rules. zima provides surface-level oversight only.
    set: secrets handling, chain of command, one-way Telegram, git boundaries (never treat
    `projects/` as one repo; run git only at the verified repo root), evidence retention,
    review-tier minimums, issue standard (legacy issues are read-only; `gh` writes are
-   leader-only). A1 changes stay inside zima; old member rules stay in force until A2.
+   leader-only). Member adoption follows the scoped migration record; deferred members
+   keep their existing rules/location until a separate authorized transition.
 8. Scope all content searches under `projects/<repo>/`. Root-wide searches only for
    cross-repo questions (the `.ignore` whitelist makes source searchable; sensitive paths
    are excluded).

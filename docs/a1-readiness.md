@@ -50,7 +50,7 @@ authorized [partial adoption](partial-migration-2026-10-23.md), excluding active
 | A1.0 | Git root and configured remote checked; unborn main; issue list read returned no issues. Remote emptiness must be rechecked online before any push. |
 | A1.1–A1.3 | PASS for A1 structure: 151 assertions, Fast/Full Pending, source/search/index/locks checks and two independent T3 reviews. |
 | A1.4 | WAIVED by user on 2026-10-21: live agent startup/context tests and special setup cancelled. Normal document reads remain required; no startup-test PASS or automatic-loading claim. |
-| A1.5 | AUTHORIZED on 2026-10-23; publication in progress. Earlier audit had no commits/push. |
+| A1.5 | DONE on 2026-10-23: bootstrap `cce0781591a9bedffca5e6a742cdd5cc17136570` pushed to origin/main and remote ref verified. |
 | A1.6 | Runbook corrected; dated 2026-10-21 transition note added to old-root AGENTS. Catalog includes the existing zima directory and removes absent ai-trading-lab; active member/old-root policies remain in force. |
 | A1.7 | PASS for preparation: six reviewed patches / 21 files; 28-check migration rehearsal; 79-check backup suite; actual protected external backup/full inventory/7 restore checks verified. This does not certify A2 production acceptance. |
 | A2 | Four-project partial scope authorized on 2026-10-23; preparation in progress. DriveTrace and shared old-root infrastructure excluded; full cutover deferred. |
@@ -75,7 +75,7 @@ and architectural review. Bootstrap task log is local until the final audit is r
 | `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/backup-local-state.ps1 -Execute` | Actual approved D: backup VERIFIED, exit 0; full source/copy/after hashes and seven isolated restore checks. |
 | Six candidate `git apply --check` + apply-on-copy | All 12 commands exit 0; applied bytes hashed; 19 existing source hashes unchanged and two new files remain absent at source. |
 | Markdown link QA | 102 local file links checked, 0 broken, including the generated repo index. Templates, external URLs and fragment-only links are excluded; future member links resolve against current source locations. |
-| PowerShell encoding QA | All five retained executable/test scripts UTF-8 BOM with CRLF. |
+| PowerShell encoding QA | Reviewed orchestration, test, rehearsal and backup scripts use UTF-8 BOM with CRLF. |
 | Git Bash pre-commit syntax + execution | PASS, exit 0 in A1; exact phase marker selects Pending. |
 
 Historical live-test attempts (closed by the 2026-10-21 user waiver; no retry or
@@ -119,10 +119,10 @@ test assertions, receipts and candidate hashes separately.
 ### Frozen artifact SHA-256
 
 ```text
-scripts/zima.ps1 b5a574aeec80418078ec823fc1829e1feae672f07972c26f3097d0eaf48d0eef
-scripts/tests/run-tests.ps1 a0260b4423d90fe2f5a82a6133c65297e5a1a1b600d40f0bde1b44a01dd63903
+scripts/zima.ps1 7f9b41f118b8fc5039746789c93a9425faf81415910bdce7fb33ab6eec2bedd7
+scripts/tests/run-tests.ps1 7b44c0417fa584bb03264335b9fbc8c37d65771e001179483cdb406b3de57555
 scripts/migration-rehearsal.ps1 18b3caac11ed84ed4bc911375b93f6d08da131f98b4321e1ff81cc88247b4e51
-final packet receipt.json 0488b5f3e1ccf15c0b85b98580927d81e858c2ddae9cd1f38c335b44fd87b620
+historical A1 policy packet receipt.json 0488b5f3e1ccf15c0b85b98580927d81e858c2ddae9cd1f38c335b44fd87b620
 scripts/backup-local-state.ps1 92ec081342da95a45049d46111ddcc68ac4206be19fe087f3b95963294c13f32
 scripts/tests/backup-tests.ps1 ab65f2109be38fce6afd5e2e133aa1833ade5a97262241c53e8761ce9b9ab252
 ```
@@ -179,3 +179,19 @@ Production freeze, whole-member governance, effective harness denies,
 runner access, selected-memory integrity, worktree/AVD/device acceptance and final cleanup remain
 the scoped migration gates. None is certified by a fixture or static review.
 Current scope and actual execution: [partial adoption](partial-migration-2026-10-23.md).
+
+### Deferred-layout preparation — 2026-10-23
+
+The current manifest explicitly defers DriveTrace at its planned future path. It is
+metadata only: no source/Git/docs/runner probes; explicit operational targets refuse
+before native calls, bulk operations skip it, and the portable workspace has zima
+plus four active entries. Normal non-Pending verification retains all active-member
+checks. Pending remains A1-only and is refused for PARTIAL phase.
+
+The existing all-active synthetic regression coverage remains 151 assertions. The
+new deferred suite passed 43 assertions, including no native calls for explicit
+refusal, no source probes, scoped runner queries, bulk exclusion and invalid metadata.
+
+This is layout preparation, not proof that project copy/activation or full-workspace
+configuration, runner-label, memory or cleanup gates have completed. Actual scoped
+execution is recorded in [partial adoption](partial-migration-2026-10-23.md).

@@ -23,6 +23,12 @@ assertions; exit 0 = all pass.
   files stay in `.agent-tmp/a1-hardening/tests-<guid>/`; only that canonical fixture
   is cleaned. `.agent-tmp/a1-hardening/test-summary.txt` retains the result.
 - No network, real member repo, zima Git index, runner, broker or user config writes.
+- The existing 151-check baseline uses an all-active synthetic manifest independently
+  of production deferrals, preserving its original safety coverage.
+- `deferred-tests.ps1` exercises optional active defaults, invalid deferral metadata,
+  pure declared-path validation, early no-probe state, explicit refusal before native
+  calls, bulk selection, active-only portable generation, metadata-only cards and
+  runner queries scoped to active containers. All paths/CLIs are synthetic fixtures.
 - `backup-tests.ps1` uses only `.agent-tmp/a1-backup/fixture-<guid>/` and loads the
   backup script without executing its production entry point. Tiny binary files,
   file/directory ADS, empty/absent categories, largest-image/signing sample restore,

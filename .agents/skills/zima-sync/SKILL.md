@@ -15,6 +15,10 @@ metadata: {}
   `zima.ps1 gen` — never hand-edit them.
 - Real JSON: no comments, no trailing commas. Field contract: `repos.schema.json` +
   semantic validator inside `scripts/zima.ps1`.
+- Optional `deferred: true` requires a nonempty `defer_reason`. It preserves planned
+  metadata only: bulk operations/workspace omit it, explicit operational targets refuse,
+  and source/Git/docs/runner probes do not occur. Reactivation needs a new authorized
+  transition; never clear deferral merely to make checks pass.
 - `defaults` apply only where a repo does not override.
 - `name` = directory slug = runner-label basis (lowercase, case-unique). GitHub repo name
   may differ (lg-tv-channel-sort ↔ lg-channel-import) — the `github` field is exact.
@@ -37,7 +41,7 @@ metadata: {}
   worktrees are FINE (fetch never touches them). Never pulls/merges/rebases.
 - `update` = worktree: ff-only fast-forward, refused on dirty trees or non-default
   branches. Diverged branches are the leader's decision per repo rules — the script never
-  merges.
+  creates merge commits.
 
 ## Card update triggers
 

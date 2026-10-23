@@ -62,6 +62,10 @@ re-run gen. Machine paths live in `.env`.
 
 ## Pending migrations (tracked as zima-filed issues, executed in their repos)
 
+These are separate planned changes, not implied by partial source adoption. A
+manifest member marked DEFERRED (currently DriveTrace) is metadata only: do not
+inspect or operate its runner/jobs during the four-project transition.
+
 - drive-trace: add `drive-trace` label to dt-docker-1 + all 5 `runs-on:` lines (label add
   sequence above). Until then dt workflows run on the shared `[self-hosted, docker]` pool.
 - call-tracker: label rename sequence above (coordinate with `scripts/ci-policy.mjs`
@@ -73,9 +77,9 @@ re-run gen. Machine paths live in `.env`.
 ## Registry (GENERATED)
 
 <!-- BEGIN GENERATED RUNNER REGISTRY -->
-| Repo | Container | Label today | Label target | Lifecycle | Compose |
-|---|---|---|---|---|---|
-| drive-trace | dt-docker-1 | (shared pool - no repo label yet) | drive-trace | keep-off-between-tasks | D:\development\drive-trace\docker-runner |
-| coin-tracker | ct-docker-1 | coin-tracker | coin-tracker | leave-running | infra/runner/compose.yml |
-| call-tracker | dm-docker-1 | daily-moods | call-tracker | stop-when-idle | infra/runner/compose.yml |
+| Repo | State | Container | Label today | Label target | Lifecycle | Compose |
+|---|---|---|---|---|---|---|
+| drive-trace | DEFERRED | dt-docker-1 | (shared pool - no repo label yet) | drive-trace | keep-off-between-tasks | D:\development\drive-trace\docker-runner |
+| coin-tracker | active | ct-docker-1 | coin-tracker | coin-tracker | leave-running | infra/runner/compose.yml |
+| call-tracker | active | dm-docker-1 | daily-moods | call-tracker | stop-when-idle | infra/runner/compose.yml |
 <!-- END GENERATED RUNNER REGISTRY -->

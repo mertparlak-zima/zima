@@ -13,7 +13,8 @@
 
 ## Entry documents
 
-- [README](../projects/str-fixer/README.md) (no in-repo AGENTS.md yet — reviewed A2 context coverage required)
+- [README](../projects/str-fixer/README.md)
+- [AGENTS.md](../projects/str-fixer/AGENTS.md) — reviewed workspace routing; applied during partial adoption
 - Skills in `.claude/skills/` (read fully before each matching task):
   [srt-fixing](../projects/str-fixer/.claude/skills/srt-fixing/SKILL.md) ·
   [srt-resync](../projects/str-fixer/.claude/skills/srt-resync/SKILL.md) ·

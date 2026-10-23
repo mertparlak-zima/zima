@@ -1,22 +1,27 @@
 # drive-trace — DriveTrace
 
+**DEFERRED — user exclusion 2026-10-23.** Another agent is active in the old-root
+project. This card is reference metadata; do not inspect, clone, sync, update, patch
+or operate its source, worktrees, evidence, CI jobs or runner in this adoption.
+The generated workspace omits it. A separate authorized transition is required.
+
 ## Identity
 
 | Field | Value |
 |---|---|
-| Dir | `projects/drive-trace` |
+| Planned future dir | `projects/drive-trace` (not adopted) |
 | GitHub | https://github.com/mertparlak-zima/drive-trace |
 | Product | DriveTrace |
 | Stack | Android/Kotlin offline dashcam, GPS, telemetry (Compose, Navigation 3, Hilt, Room, CameraX, Media3, MapLibre; minSdk 29/target 36, JDK 25) |
 | Default branch | `main` |
 | Local state | **irreplaceable** — `artifacts/device-evidence/` (permanent acceptance evidence, never uploaded) |
 
-## Entry documents (read through these links — content lives in the repo)
+## Reference paths (planned future location; no source probes)
 
-- [README](../projects/drive-trace/README.md) — project overview
-- [AGENTS.md](../projects/drive-trace/AGENTS.md) — mandatory agent rules (issue-driven, evidence policy)
-- [Skills catalog](../projects/drive-trace/docs/agent-skills.md) — skills live in `.opencode/skills/` (+ vendored `vendor/`)
-- Key docs: [ROADMAP](../projects/drive-trace/docs/ROADMAP.md) (normative) · [architecture](../projects/drive-trace/docs/architecture.md) · [data-model](../projects/drive-trace/docs/data-model.md) · [data-integrity](../projects/drive-trace/docs/data-integrity.md) · [device-test-runbook](../projects/drive-trace/docs/device-test-runbook.md)
+- `README.md` (README) — project overview
+- `AGENTS.md` (AGENTS.md) — mandatory agent rules (issue-driven, evidence policy)
+- `docs/agent-skills.md` (Skills catalog) — skills live in `.opencode/skills/` (+ vendored `vendor/`)
+- Key docs: `docs/ROADMAP.md` (ROADMAP) (normative) · `docs/architecture.md` (architecture) · `docs/data-model.md` (data-model) · `docs/data-integrity.md` (data-integrity) · `docs/device-test-runbook.md` (device-test-runbook)
 - Active work source of truth: [GitHub Issues](https://github.com/mertparlak-zima/drive-trace/issues) + milestones
 
 ## CI and runner
@@ -34,7 +39,7 @@ Repo-owned scripts to use (never duplicate): `scripts/finalize-issue.ps1`,
 ## Branches and protection
 
 Default `main`. **Known external worktree:**
-`D:\development\drive-trace\worktrees\issue13-tests` — repaired during cutover; never delete.
+`D:\development\drive-trace\worktrees\issue13-tests` — outside this partial adoption; leave untouched.
 
 ## Workspace quirks
 

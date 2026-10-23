@@ -8,6 +8,8 @@
   "repos": [
     {
       "name": "drive-trace",
+      "deferred": true,
+      "defer_reason": "User exclusion 2026-10-23: another agent is active; leave old-root source, worktrees and runner untouched",
       "product": "DriveTrace",
       "github": "https://github.com/mertparlak-zima/drive-trace.git",
       "path": "projects/drive-trace",
@@ -112,7 +114,7 @@
       "ci_workflows": [],
       "docs": {
         "readme": "README.md",
-        "agents": null,
+        "agents": "AGENTS.md",
         "skills": ".claude/skills/lg-tll-channel-editing/SKILL.md",
         "key": [".claude/skills/lg-42lb652v-tv/SKILL.md"]
       },
@@ -121,8 +123,7 @@
       "state_note": null,
       "quirks": [
         "github-name-mismatch-lg-channel-import",
-        "no-ci-by-design",
-        "agents-md-a2-workspace-context-required"
+        "no-ci-by-design"
       ]
     },
     {
@@ -137,7 +138,7 @@
       "ci_workflows": [],
       "docs": {
         "readme": "README.md",
-        "agents": null,
+        "agents": "AGENTS.md",
         "skills": ".claude/skills/srt-fixing/SKILL.md",
         "key": [".claude/skills/srt-resync/SKILL.md", ".claude/skills/pgs-extract/SKILL.md", "scripts/fix_srt.py", "scripts/resync_srt.py", "scripts/extract_pgs.py"]
       },
@@ -146,8 +147,7 @@
       "state_note": "input/, output/, samples/ and root .srt files are local-only irreplaceable media (never committed)",
       "quirks": [
         "media-files-never-committed",
-        "no-ci-by-design",
-        "agents-md-a2-workspace-context-required"
+        "no-ci-by-design"
       ]
     }
   ],

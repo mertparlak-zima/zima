@@ -24,11 +24,13 @@ function Get-FixtureSnapshot {
  $stash=Invoke-FixtureGit $RepoDir @('stash','list','--format=%H')
  return ([ordered]@{head=($head.Output -join '');index=(Get-FileHash -LiteralPath (Join-Path $RepoDir '.git/index') -Algorithm SHA256).Hash;status=$status.Stdout;stashes=$stash.Output;files=$files}|ConvertTo-Json -Depth 20 -Compress)
 }
-$base=Read-ZimaManifest (Join-Path $root 'repos.json')
+$real=Read-ZimaManifest (Join-Path $root 'repos.json');$base=Copy-M $real
+# Preserve the original all-active fixture coverage independently of production deferrals.
+foreach($repo in $base['repos']){$repo.Remove('deferred');$repo.Remove('defer_reason')}
 $rel='.agent-tmp/a1-hardening/tests-'+[guid]::NewGuid().ToString('N');$tree=Get-ZimaSafePath $root $rel
 $null=New-Item -ItemType Directory -Force -Path $tree
 try{
- Assert (Valid $base) 'real manifest validates'
+ Assert (Valid $real) 'real manifest validates'
  $m=Copy-M $base;$m['Version']=$m['version'];$m.Remove('version');Assert (!(Valid $m)) 'case-sensitive JSON property names enforced'
  foreach($text in @('{"a":1,}','{/*comment*/"a":1}','{"a":1}//comment')){$p=Join-Path $tree 'bad.json';Write-Utf8NoBom $p $text;Throws {Read-ZimaManifest $p} 'strict JSON comments/trailing comma rejected'}
  $stderrScript=Join-Path $tree 'stderr.ps1';Write-Utf8NoBom $stderrScript "[Console]::Out.WriteLine('stdout-data')`n[Console]::Error.WriteLine('stderr-warning')`nexit 0`n"
@@ -78,6 +80,9 @@ try{
  $null=New-Item -ItemType Directory -Path (Join-Path $script:Workspace 'scripts'),(Join-Path $script:Workspace 'projects')
  foreach($file in @('AGENTS.md','README.md','repos.schema.json','.gitignore','.ignore','.gitattributes')){Copy-Item -LiteralPath (Join-Path $root $file) -Destination (Join-Path $script:Workspace $file)}
  Copy-Item -LiteralPath (Join-Path $root 'scripts/zima.ps1') -Destination (Join-Path $script:Workspace 'scripts/zima.ps1');Write-Utf8NoBom (Join-Path $script:Workspace 'scripts/README.md') 'fixture'
+ # Production's deferred card uses reference text rather than live member links.
+ # The original all-active fixture still exercises every required card link.
+ foreach($r in $base['repos']){$card=Join-Path $script:Workspace ('repos/'+$r['name']+'.md');$cardText=[IO.File]::ReadAllText($card);foreach($doc in @($r['docs']['readme'],$r['docs']['agents'],$r['docs']['skills'])+@($r['docs']['key'])){if($null -ne $doc){$target='../'+$r['path']+'/'+$doc;if(!$cardText.Contains(']('+$target+')')){$cardText+="`n- [Synthetic entry]($target)`n"}}};Write-Utf8NoBom $card $cardText}
  Save-M $base;$null=Invoke-FixtureGit $script:Workspace @('init','--quiet');$m=Resolve-ZimaDefaults $base
  Invoke-ZimaGen $m $script:Workspace;$first=Get-ZimaGenerated $m $script:Workspace;Invoke-ZimaGen $m $script:Workspace;$second=Get-ZimaGenerated $m $script:Workspace
  foreach($p in $first.Keys){Assert ($first[$p] -ceq $second[$p]) ('deterministic generation: '+$p)}

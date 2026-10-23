@@ -21,17 +21,25 @@ workspace. This operation cannot satisfy the full-cutover G18 old-root cleanup.
 
 ## Current execution status
 
-- A1 publication authorized; remote checked empty immediately before publication.
+- A1 publication completed: `cce0781591a9bedffca5e6a742cdd5cc17136570` pushed to
+  `origin/main`, with the remote ref verified. Remote was empty before publication.
 - Project metadata, policy applicability, capacity and scoped freeze are being
   revalidated. No project transfer has occurred in this run yet.
-- A mixed layout must be represented explicitly before activation; a deferred
-  project must never be silently cloned, fetched, updated or policy-patched.
+- Mixed layout is explicit in the manifest: `deferred: true` with `defer_reason`
+  keeps DriveTrace as metadata only at its planned future path. It is omitted from
+  the generated workspace; bulk operations skip it and explicit operational targets
+  refuse before native calls. No legacy-source fallback or external path is introduced.
+  Four active entries still require normal non-Pending verification after adoption.
 - Existing dirty/index/stash/local data must survive. Copy-only verification and
   scoped COMMITTED evidence precede any source cleanup. Unknown targets are refused.
 - Only zima commits/pushes are authorized here. Member histories remain independent;
   their contents and private migration evidence never enter zima's Git index.
 - Live AI startup tests remain waived. Backup/restore, Git/data integrity and
   applicable functional/security checks retain their documented requirements.
+- Full-workspace global-config/permission relocation, runner-label changes and
+  old-root cleanup remain deferred with the shared infrastructure. They are not
+  claimed complete by a successful active-member structural check. Each project
+  still requires its scoped integrity/activation evidence before source cleanup.
 
 Record actual results and deferred gates here as execution progresses.
 [Readiness](a1-readiness.md) · [GO checklist](a2-go-checklist.md) ·
