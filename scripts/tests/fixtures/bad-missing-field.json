@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "org": "mertparlak-zima",
+  "defaults": {
+    "owner_type": "ours",
+    "branch": "main"
+  },
+  "third_party": [],
+  "repos": [
+    {
+      "name": "alpha",
+      "product": "Alpha",
+      "github": "https://github.com/mertparlak-zima/alpha.git",
+      "path": "projects/alpha",
+      "owner_type": "ours",
+      "default_branch": "main",
+      "runner": null,
+      "ci_workflows": [],
+      "docs": {
+        "readme": "README.md",
+        "agents": null,
+        "skills": null,
+        "key": []
+      },
+      "skills_locations": [],
+      "local_state": "clean",
+      "state_note": null,
+      "quirks": []
+    }
+  ]
+}

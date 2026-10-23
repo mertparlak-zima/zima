@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "org": "mertparlak-zima",
+  "defaults": {
+    "owner_type": "ours",
+    "branch": "main"
+  },
+  "third_party": [],
+  "repos": [
+    {
+      "name": "alpha",
+      "product": "Alpha",
+      "github": "https://github.com/mertparlak-zima/alpha.git",
+      "path": "projects/alpha",
+      "owner_type": "ours",
+      "default_branch": "main",
+      "stack": "test",
+      "runner": {
+        "label": "shared",
+        "container": "a-1",
+        "lifecycle": "leave-running",
+        "compose": null,
+        "label_status": "compliant"
+      },
+      "ci_workflows": [
+        "ci.yml"
+      ],
+      "docs": {
+        "readme": "README.md",
+        "agents": null,
+        "skills": null,
+        "key": []
+      },
+      "skills_locations": [],
+      "local_state": "clean",
+      "state_note": null,
+      "quirks": []
+    },
+    {
+      "name": "beta",
+      "product": "Alpha",
+      "github": "https://github.com/mertparlak-zima/beta.git",
+      "path": "projects/beta",
+      "owner_type": "ours",
+      "default_branch": "main",
+      "stack": "test",
+      "runner": {
+        "label": "shared",
+        "container": "b-1",
+        "lifecycle": "leave-running",
+        "compose": null,
+        "label_status": "compliant"
+      },
+      "ci_workflows": [
+        "ci.yml"
+      ],
+      "docs": {
+        "readme": "README.md",
+        "agents": null,
+        "skills": null,
+        "key": []
+      },
+      "skills_locations": [],
+      "local_state": "clean",
+      "state_note": null,
+      "quirks": []
+    }
+  ]
+}

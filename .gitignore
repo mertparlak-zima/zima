@@ -1,0 +1,18 @@
+# zima workspace meta-repo — ignore rules (EXACT SET is verified by `zima verify -Fast`)
+# Member repos live under projects/ as independent git boundaries — never tracked by zima.
+projects/*
+!projects/.gitkeep
+projects/.shared/
+# Durable local state, archives, evidence, temp, live infra — local-only, never committed.
+.local-state/
+.local-archives/
+artifacts/
+.agent-tmp/
+.jarvis-telegram-mcp/
+# Machine config (template env.example IS committed; .env is local-only).
+.env
+.env.*
+# IDE / harness noise at zima root (repo-internal harness dirs are respected and untouched).
+.idea/
+.claude/
+.vscode/

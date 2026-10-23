@@ -1,0 +1,16 @@
+#!/bin/sh
+# zima pre-commit hook (installed via: git config core.hooksPath hooks)
+# Runs the fast consistency gate. During A1 (phase file says "A1") repo-directory
+# checks are skipped via -Pending; after cutover the full -Fast gate applies.
+# Sub-second by design - bypassing with --no-verify should never be needed.
+PHASE=""
+if [ -f .local-state/migration/PHASE ]; then
+    PHASE=$(tr -d '\r\n' < .local-state/migration/PHASE)
+fi
+if [ "$PHASE" = "A1" ]; then
+    MODE="-Pending"
+else
+    MODE=""
+fi
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/zima.ps1 verify -Fast $MODE
+exit $?

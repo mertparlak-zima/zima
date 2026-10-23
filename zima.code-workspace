@@ -1,0 +1,35 @@
+{
+    "folders":  [
+                    {
+                        "name":  "zima",
+                        "path":  "."
+                    },
+                    {
+                        "name":  "drive-trace",
+                        "path":  "projects/drive-trace"
+                    },
+                    {
+                        "name":  "coin-tracker",
+                        "path":  "projects/coin-tracker"
+                    },
+                    {
+                        "name":  "call-tracker",
+                        "path":  "projects/call-tracker"
+                    },
+                    {
+                        "name":  "lg-tv-channel-sort",
+                        "path":  "projects/lg-tv-channel-sort"
+                    },
+                    {
+                        "name":  "str-fixer",
+                        "path":  "projects/str-fixer"
+                    }
+                ],
+    "settings":  {
+                     "search.exclude":  {
+                                            "**/node_modules":  true,
+                                            "**/build":  true,
+                                            "**/.gradle":  true
+                                        }
+                 }
+}

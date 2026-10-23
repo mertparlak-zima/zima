@@ -1,0 +1,56 @@
+# ripgrep visibility overrides (read by rg-based tools, NOT by git).
+# Problem this solves: zima's .gitignore hides projects/, which would make repo content
+# invisible to root-session searches. These whitelists re-include repo CONTENT for search
+# while the exclusion list below keeps sensitive/heavy paths out of default searches.
+# Verified against the K07 probe: without the exclusions, `!projects/**` would also expose
+# nested .git internals, node_modules, private/ and .env files to every search.
+!projects/
+!projects/**
+projects/**/.git/
+projects/**/.git
+projects/**/node_modules/
+projects/**/private/
+projects/**/.env
+projects/**/.env.*
+projects/**/build/
+projects/**/.gradle/
+projects/**/dist/
+projects/**/.agent-tmp/
+projects/**/artifacts/
+projects/**/.idea/
+projects/**/.opencode/node_modules/
+projects/**/.agents/node_modules/
+projects/**/.planning/
+projects/**/.kotlin/
+projects/**/.vite/
+projects/**/.vitest/
+projects/**/coverage/
+projects/**/__pycache__/
+projects/**/.tmp/
+projects/**/.bootstrap-scaffold/
+projects/**/device-evidence/
+projects/**/local.properties
+projects/**/*.jks
+projects/**/*.keystore
+projects/**/*.p12
+projects/**/*.pem
+projects/**/*.key
+projects/**/*.apk
+projects/**/*.aab
+projects/**/*.db
+projects/**/*.db-*
+projects/**/*.sqlite*
+projects/**/*.hprof
+projects/**/credentials*.json
+projects/**/service-account*.json
+projects/str-fixer/input/
+projects/str-fixer/output/
+projects/str-fixer/samples/
+projects/str-fixer/**/*.srt
+projects/str-fixer/**/*.srt.bak
+projects/lg-tv-channel-sort/output/
+projects/**/.cxx/
+projects/**/.externalNativeBuild/
+projects/**/captures/
+projects/**/*.local
+projects/**/*.log

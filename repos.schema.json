@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "zima workspace manifest",
+  "description": "Validation contract for repos.json. This is a schema, NOT a second catalog: repos.json remains the single source of truth; cross-record rules (uniqueness, path safety, defaults resolution) are enforced by the semantic validator in scripts/zima.ps1 (Invoke-ZimaManifestValidation).",
+  "type": "object",
+  "required": ["version", "org", "defaults", "repos", "third_party"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "org": { "type": "string", "minLength": 1 },
+    "defaults": {
+      "type": "object",
+      "required": ["owner_type", "branch"],
+      "additionalProperties": false,
+      "properties": {
+        "owner_type": { "enum": ["ours", "third-party"] },
+        "branch": { "type": "string", "minLength": 1 }
+      }
+    },
+    "repos": { "type": "array", "items": { "$ref": "#/definitions/repo" } },
+    "third_party": { "type": "array", "items": { "$ref": "#/definitions/thirdParty" } }
+  },
+  "definitions": {
+    "repo": {
+      "type": "object",
+      "required": ["name", "product", "github", "path", "stack", "ci_workflows", "docs", "skills_locations", "local_state", "quirks"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "description": "slug = directory name under projects/ = runner label basis; lowercase, case-unique" },
+        "product": { "type": "string", "minLength": 1 },
+        "github": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+\\.git$", "description": "clone URL; may differ from name (e.g. lg-tv-channel-sort -> lg-channel-import)" },
+        "path": { "type": "string", "pattern": "^projects/[a-z0-9][a-z0-9-]*$", "description": "relative to zima root; must not contain .. or backslash" },
+        "owner_type": { "enum": ["ours"] },
+        "default_branch": { "type": "string", "minLength": 1 },
+        "stack": { "type": "string", "minLength": 1 },
+        "runner": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "required": ["label", "container", "lifecycle", "label_status"],
+              "additionalProperties": false,
+              "properties": {
+                "label": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+                "container": { "type": "string", "minLength": 1 },
+                "lifecycle": { "enum": ["keep-off-between-tasks", "leave-running", "stop-when-idle"] },
+                "compose": { "type": ["string", "null"], "description": "absolute external root (D:\\...) or path relative to the repo root" },
+                "label_status": { "enum": ["compliant", "pending-migration", "rename-pending-target-call-tracker"] }
+              }
+            }
+          ]
+        },
+        "ci_workflows": { "type": "array", "items": { "type": "string", "pattern": "^[\\w.-]+\\.ya?ml$" } },
+        "docs": {
+          "type": "object",
+          "required": ["readme", "agents", "skills", "key"],
+          "additionalProperties": false,
+          "properties": {
+            "readme": { "type": ["string", "null"] },
+            "agents": { "type": ["string", "null"], "description": "repo's own AGENTS.md if present; null requires an explicit repository-entry read before work; mandatory A2 policy coverage may not be deferred" },
+            "skills": { "type": ["string", "null"] },
+            "key": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "skills_locations": { "type": "array", "items": { "type": "string" }, "description": "in-repo skill directories; conventions are the repo's own, zima only indexes" },
+        "local_state": { "enum": ["clean", "irreplaceable"], "description": "irreplaceable => zima clone must NEVER auto-create the directory; missing dir is a STOP-and-notify condition" },
+        "state_note": { "type": ["string", "null"] },
+        "quirks": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "thirdParty": {
+      "type": "object",
+      "required": ["name", "github", "path", "trusted"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "github": { "type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+\\.git$" },
+        "path": { "type": "string", "description": "MUST be outside the zima cwd tree (e.g. D:\\development\\third-party\\<repo>) so third-party AGENTS.md/skills are never auto-loaded" },
+        "trusted": { "const": false },
+        "note": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
