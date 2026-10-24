@@ -10,8 +10,9 @@ workspace docs, agent skills and orchestration scripts. Member repos live under 
 **Start at [AGENTS.md](AGENTS.md).** It is the router: startup protocol, chain of command,
 Telegram/runners/issues policies, and the skill index.
 
-Current stage: A1 publication authorized; [partial adoption](docs/partial-migration-2026-10-23.md)
-preparing four projects while DriveTrace stays in its active old-root workspace.
+Current stage: four projects are available under `projects/`; see the
+[workspace setup](docs/partial-migration-2026-10-23.md). Originals are retained;
+DriveTrace and shared old-root infrastructure stay in their original locations.
 [Readiness and audit](docs/a1-readiness.md) records verified results and remaining gates.
 Each agent reads AGENTS.md, the target repo card and that repo's rules/skills before work.
 Deferred members are metadata only; operational commands and source/runner probes skip them.

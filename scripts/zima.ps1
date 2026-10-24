@@ -171,7 +171,7 @@ function Get-ZimaRepoState {
   $null=Get-ZimaSafePath $dir '.git';$g=Invoke-ZimaNative git @('-C',$dir,'rev-parse','--show-toplevel');if($g.Code -ne 0){return $s};if([IO.Path]::GetFullPath(($g.Output -join '').Replace('/','\')).TrimEnd('\') -ine $dir.TrimEnd('\')){return $s};$s.isGit=$true
   $g=Invoke-ZimaNative git @('-C',$dir,'remote','get-url','origin');$s.originOk=($g.Code -eq 0 -and ($g.Output -join '') -ceq $Repo['github'])
   $g=Invoke-ZimaNative git @('-C',$dir,'symbolic-ref','--quiet','--short','HEAD');if($g.Code -eq 0){$s.branch=$g.Output -join ''}else{$s.detached=$true;$s.branch='(detached)'}
-  $g=Invoke-ZimaNative git @('-C',$dir,'status','--porcelain=v1','--untracked-files=all');if($g.Code -ne 0){throw 'git status failed'}
+  $g=Invoke-ZimaNative git @('--no-optional-locks','-C',$dir,'status','--porcelain=v1','--untracked-files=all');if($g.Code -ne 0){throw 'git status failed'}
   foreach($line in $g.Output){if($line.StartsWith('??')){$s.untracked++;continue};if($line.Length -lt 2){continue};if($line[0] -ne ' '){$s.staged++};if($line[1] -ne ' '){$s.unstaged++};if($line.Substring(0,2) -in @('DD','AU','UD','UA','DU','AA','UU')){$s.conflicts++}}
   $g=Invoke-ZimaNative git @('-C',$dir,'stash','list');if($g.Code -ne 0){throw 'git stash list failed'};$s.stashes=$g.Output.Count
   $g=Invoke-ZimaNative git @('-C',$dir,'rev-parse','--abbrev-ref','--symbolic-full-name','@{upstream}')

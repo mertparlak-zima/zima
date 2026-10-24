@@ -65,6 +65,28 @@ try{
  Assert-Deferred ($targets.Count -eq 4 -and @($targets|Where-Object{$_['name'] -eq 'drive-trace'}).Count -eq 0) 'bulk targets exclude deferred member'
  Assert-Deferred (Test-DeferredThrows {Get-ZimaTargets $m @('drive-trace')}) 'explicit target selector refuses deferred member'
 
+ # Relocated files have new stat/inode data. A clean status read must not refresh
+ # the raw index, which is preserved byte-for-byte by the migration transaction.
+ $statusMember=@($m['repos']|Where-Object{$_['name'] -eq 'lg-tv-channel-sort'})[0]
+ $statusDir=Get-ZimaSafePath $tree $statusMember['path'];$null=New-Item -ItemType Directory -Path $statusDir
+ $oldOptionalLocks=$env:GIT_OPTIONAL_LOCKS
+ try{
+  $env:GIT_OPTIONAL_LOCKS='1'
+  foreach($arguments in @(@('init','--quiet','-b','main'),@('config','user.name','Synthetic'),@('config','user.email','synthetic@example.invalid'),@('config','core.fsmonitor','false'),@('config','core.untrackedCache','false'),@('remote','add','origin',$statusMember['github']))){
+   $g=Invoke-ZimaNative git (@('-C',$statusDir)+$arguments);if($g.Code -ne 0){throw 'Synthetic status Git setup failed'}
+  }
+  $tracked=Join-Path $statusDir 'tracked.txt';Write-Utf8NoBom $tracked "Unchanged synthetic tracked content.`n"
+  foreach($arguments in @(@('add','tracked.txt'),@('commit','--quiet','-m','Synthetic baseline'))){$g=Invoke-ZimaNative git (@('-C',$statusDir)+$arguments);if($g.Code -ne 0){throw 'Synthetic status Git commit failed'}}
+  [IO.File]::SetLastWriteTimeUtc($tracked,[DateTime]::UtcNow.AddDays(-1))
+  $index=Join-Path $statusDir '.git/index';$beforeHash=(Get-FileHash -LiteralPath $index -Algorithm SHA256).Hash;$beforeTime=[IO.File]::GetLastWriteTimeUtc($index).Ticks
+  $readState=Get-ZimaRepoState $statusMember $tree
+  Assert-Deferred ($readState.isGit -and $readState.originOk -and $null -eq $readState.error -and $readState.staged -eq 0 -and $readState.unstaged -eq 0 -and $readState.untracked -eq 0) 'stale tracked-file mtime still reports a clean synthetic repository'
+  Assert-Deferred ($beforeHash -ceq (Get-FileHash -LiteralPath $index -Algorithm SHA256).Hash -and $beforeTime -eq [IO.File]::GetLastWriteTimeUtc($index).Ticks) 'status read preserves raw index bytes and mtime despite stale stat data'
+ }finally{
+  $env:GIT_OPTIONAL_LOCKS=$oldOptionalLocks
+  if(Test-Path -LiteralPath $statusDir){$checkedStatus=Get-ZimaSafePath $tree $statusMember['path'];Remove-Item -LiteralPath $checkedStatus -Recurse -Force}
+ }
+
  # Actual child CLI processes use synthetic native shims; explicit refusal must
  # happen before even metadata-only native calls. No real network/runner exists.
  $shim=Join-Path $tree 'shim';$gitLog=Join-Path $shim 'git.log';$ghLog=Join-Path $shim 'gh.log';$dockerLog=Join-Path $shim 'docker.log'

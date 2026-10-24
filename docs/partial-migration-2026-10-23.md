@@ -1,46 +1,43 @@
-# Partial project adoption — 2026-10-23
+# Four-project workspace setup
 
-User authorization: publish zima with commit/push and gradually transfer existing
-projects, except DriveTrace, where another agent is actively working. This
-releases the earlier publication hold. The [full migration runbook](migration-2026-10.md)
-remains the integrity baseline; actual partial execution is being prepared.
+The four authorized projects are available under `projects/`. DriveTrace remains
+at its original location and was excluded from source, worktree, job and runner
+operations. Shared old-root infrastructure and global settings remain in place.
 
-## Authorized scope
+| Project | Active directory |
+|---|---|
+| LG Channel List Editor | `projects/lg-tv-channel-sort/` |
+| str-fixer | `projects/str-fixer/` |
+| Coin Tracker | `projects/coin-tracker/` |
+| Daily Moods | `projects/call-tracker/` |
 
-| Project | Source under old workspace | Target under zima |
-|---|---|---|
-| Coin Tracker | `coin-tracker/` | `projects/coin-tracker/` |
-| LG Channel List Editor | `lg-tv-channel-sort/` | `projects/lg-tv-channel-sort/` |
-| str-fixer | `str-fixer/` | `projects/str-fixer/` |
-| Daily Moods | `call-tracker/` | `projects/call-tracker/` |
+## Current outcome ? 2026-10-25
 
-DriveTrace remains at its current location and outside this operation. Its source,
-worktrees, evidence, policies, CI jobs and runner are excluded. `drive-trace-prd/`
-and shared old-root infrastructure/configuration stay in place for the active
-workspace. This operation cannot satisfy the full-cutover G18 old-root cleanup.
+Git checks confirmed all four original repositories clean. Complete existing
+copies are used, preserving their Git history, branches and local ignored data.
+Target changes are the workspace instruction patches and Daily Moods local-path
+repairs. Member repositories remain independent; no member commit/push occurred.
+All four original directories are retained. No migration COMMITTED boundary or
+source cleanup occurred. Protected recovery records remain under the existing
+C/D run `partial-20261023-b279d9711e44`.
 
-## Current execution status
+The user explicitly rejected the bespoke migration workflow and its resource
+cost on 2026-10-25. Do not resume its attestation/COMMITTED/cleanup sequence or add
+more migration tests. Use ordinary Git checks and cloning when needed, preserving
+any required local ignored configuration. The unpublished migration engine and
+its dedicated tests were removed from the deliverable; task-only copies remain.
+The earlier full migration runbook is not a requirement for using these copies.
 
-- A1 publication completed: `cce0781591a9bedffca5e6a742cdd5cc17136570` pushed to
-  `origin/main`, with the remote ref verified. Remote was empty before publication.
-- Project metadata, policy applicability, capacity and scoped freeze are being
-  revalidated. No project transfer has occurred in this run yet.
-- Mixed layout is explicit in the manifest: `deferred: true` with `defer_reason`
-  keeps DriveTrace as metadata only at its planned future path. It is omitted from
-  the generated workspace; bulk operations skip it and explicit operational targets
-  refuse before native calls. No legacy-source fallback or external path is introduced.
-  Four active entries still require normal non-Pending verification after adoption.
-- Existing dirty/index/stash/local data must survive. Copy-only verification and
-  scoped COMMITTED evidence precede any source cleanup. Unknown targets are refused.
-- Only zima commits/pushes are authorized here. Member histories remain independent;
-  their contents and private migration evidence never enter zima's Git index.
-- Live AI startup tests remain waived. Backup/restore, Git/data integrity and
-  applicable functional/security checks retain their documented requirements.
-- Full-workspace global-config/permission relocation, runner-label changes and
-  old-root cleanup remain deferred with the shared infrastructure. They are not
-  claimed complete by a successful active-member structural check. Each project
-  still requires its scoped integrity/activation evidence before source cleanup.
+Live AI tests and Call AVD boot were explicitly waived. No boot or product/device
+acceptance PASS is claimed. Source data was not deleted. DriveTrace and global
+infrastructure relocation remain outside this task.
 
-Record actual results and deferred gates here as execution progresses.
-[Readiness](a1-readiness.md) · [GO checklist](a2-go-checklist.md) ·
-[workspace decisions](decisions.md).
+The stopped Daily Moods runner now uses the target readonly bind; its five new
+registration files were verified and it remains stopped. Coin's existing runner
+was left stopped; neither runner listener nor the shared engine was restarted.
+
+Zima's status command disables optional Git index writes. Its existing validation
+passed 151 baseline and 45 deferred/status assertions. Only Zima metadata/code
+is published; member data, local state and credentials remain ignored.
+
+[Router](../AGENTS.md) ? [Readiness](a1-readiness.md) ? [Runner policy](runners.md)
