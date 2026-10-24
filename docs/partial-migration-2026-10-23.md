@@ -17,19 +17,22 @@ Git checks confirmed all four original repositories clean. Complete existing
 copies are used, preserving their Git history, branches and local ignored data.
 Target changes are the workspace instruction patches and Daily Moods local-path
 repairs. Member repositories remain independent; no member commit/push occurred.
-All four original directories are retained. No migration COMMITTED boundary or
-source cleanup occurred. Protected recovery records remain under the existing
+At the user's request on 2026-10-25, the four redundant original directories were
+removed after a fresh clean-Git/same-HEAD and local-file presence/size/time check.
+Only the reviewed policy/path edits differed. No bespoke migration COMMITTED
+sequence was used. Protected recovery records remain under the existing
 C/D run `partial-20261023-b279d9711e44`.
 
 The user explicitly rejected the bespoke migration workflow and its resource
-cost on 2026-10-25. Do not resume its attestation/COMMITTED/cleanup sequence or add
+cost on 2026-10-25. Do not resume its attestation/COMMITTED sequence or add
 more migration tests. Use ordinary Git checks and cloning when needed, preserving
 any required local ignored configuration. The unpublished migration engine and
 its dedicated tests were removed from the deliverable; task-only copies remain.
 The earlier full migration runbook is not a requirement for using these copies.
 
 Live AI tests and Call AVD boot were explicitly waived. No boot or product/device
-acceptance PASS is claimed. Source data was not deleted. DriveTrace and global
+acceptance PASS is claimed. The superseded root plan and architecture-review documents were also removed.
+Active AGENTS and Telegram instructions were retained. DriveTrace and global
 infrastructure relocation remain outside this task.
 
 The stopped Daily Moods runner now uses the target readonly bind; its five new
