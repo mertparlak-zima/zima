@@ -1,6 +1,6 @@
 # zima
 
-Workspace meta-repo for six independent Git repositories, all active under
+Workspace meta-repo for seven independent Git repositories, all active under
 `projects/`. Local Claude settings live in ignored `.claude/`.
 zima holds the rules, the manifest (`repos.json`),
 workspace docs, agent skills and orchestration scripts. Member repos live under `projects/`
@@ -9,12 +9,12 @@ workspace docs, agent skills and orchestration scripts. Member repos live under 
 **Start at [AGENTS.md](AGENTS.md).** It is the router: startup protocol, chain of command,
 Telegram/runners/issues policies, and the skill index.
 
-Open the `zima` folder directly in VS Code for one Explorer root and all seven
-Source Control repositories: Zima plus the six members under `projects/`.
+Open the `zima` folder directly in VS Code for one Explorer root and all eight
+Source Control repositories: Zima plus the seven members under `projects/`.
 The shared [VS Code settings](.vscode/README.md) enable discovery to depth two;
 they contain no machine paths or credentials.
 
-Current stage: all six catalogued projects are active under `projects/`;
+Current stage: all seven catalogued projects are active under `projects/`;
 see the [current workspace record](docs/workspace.md).
 Each agent reads AGENTS.md, the target repo card and that repo's rules/skills before work.
 Any future deferred member remains metadata only until explicitly reactivated.

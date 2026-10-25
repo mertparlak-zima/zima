@@ -1,8 +1,8 @@
 # Current workspace
 
-All six catalogued repositories are active under `projects/`: DriveTrace, Coin Tracker,
-Daily Moods, LG Channel List Editor, str-fixer, and Tahmin Ligi. Open the Zima folder
-directly in VS Code: Explorer has one Zima root and Source Control lists all seven
+All seven catalogued repositories are active under `projects/`: DriveTrace, Coin Tracker,
+Daily Moods, LG Channel List Editor, str-fixer, Tahmin Ligi, and HeliBoard Archive. Open the Zima folder
+directly in VS Code: Explorer has one Zima root and Source Control lists all eight
 repositories. The shared [settings](../.vscode/README.md) enable Git discovery to depth
 two. Member repositories remain independent Git boundaries.
 

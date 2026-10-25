@@ -221,6 +221,34 @@
       "local_state": "irreplaceable",
       "product": "Tahmin Ligi",
       "default_branch": "main"
+    },
+    {
+      "github": "https://github.com/mertparlak-zima/heliboard-archive.git",
+      "skills_locations": [],
+      "owner_type": "ours",
+      "path": "projects/heliboard-archive",
+      "runner": null,
+      "name": "heliboard-archive",
+      "state_note": "Source clone; archive application code and signing material not yet introduced. Inherited GitHub-hosted CI awaits P03 audit. No local runner provisioned.",
+      "ci_workflows": [],
+      "quirks": [
+        "upstream-heliboard-fork",
+        "inherited-github-hosted-ci-awaiting-audit",
+        "archive-not-implemented"
+      ],
+      "stack": "Android Kotlin Java HeliBoard fork with offline personal text archive",
+      "docs": {
+        "readme": "README.md",
+        "agents": "AGENTS.md",
+        "skills": null,
+        "key": [
+          "docs/README.md",
+          "docs/roadmap.md"
+        ]
+      },
+      "local_state": "clean",
+      "product": "HeliBoard Archive",
+      "default_branch": "main"
     }
   ],
   "third_party": [],

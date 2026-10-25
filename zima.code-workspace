@@ -27,6 +27,10 @@
                     {
                         "name":  "tahmin-ligi",
                         "path":  "projects/tahmin-ligi"
+                    },
+                    {
+                        "name":  "heliboard-archive",
+                        "path":  "projects/heliboard-archive"
                     }
                 ],
     "settings":  {
