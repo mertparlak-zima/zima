@@ -1,6 +1,6 @@
 # Workspace project setup
 
-All five catalogued projects are active under `projects/`.
+All six catalogued projects are active under `projects/`.
 
 | Project | Directory |
 |---|---|
@@ -9,6 +9,7 @@ All five catalogued projects are active under `projects/`.
 | Daily Moods | `projects/call-tracker/` |
 | LG Channel List Editor | `projects/lg-tv-channel-sort/` |
 | str-fixer | `projects/str-fixer/` |
+| Tahmin Ligi | `projects/tahmin-ligi/` |
 
 ## Completed adoption - 2026-10-25
 
@@ -52,3 +53,22 @@ passed 151 baseline and 45 deferred/status assertions. Credentials/local data
 remain excluded from the Zima Git index.
 
 [Router](../AGENTS.md) - [Readiness](a1-readiness.md) - [Runner policy](runners.md)
+
+## Tahmin Ligi and remaining root folders - 2026-10-25
+
+Tahmin Ligi was moved into `projects/tahmin-ligi` with Git history, dependencies,
+product env files, Vercel linkage and both local database backups retained.
+Its old directory is gone. Application source and deployment were unchanged;
+only the standard local workspace-context prefix was added to AGENTS.
+Database backups and Vercel linkage are excluded from root ripgrep searches;
+source remains visible. The local-data flag prevents blind future auto-cloning.
+
+Remaining root-folder decisions and completed actions:
+
+| Folder | Outcome |
+|---|---|
+| `.claude/` | Retained outside the meta-repo: two shared local rule/permission files; no settings copied into Zima. |
+| `.idea/` | Five obsolete old-root IDE metadata files removed; no run/debug/database configurations were present. |
+| `.jarvis-telegram-mcp/` | Retained as the shared running service. Moving it requires coordinated MCP/Startup/plugin paths and broker ownership; no service restart occurred. Its README now points to Zima's notification contract. |
+| `.local-archives/` | Empty directory removed. |
+| `artifacts/` | Eleven unique evidence files (1,204,536 bytes) moved unchanged to ignored `zima/artifacts/`, outside the active DriveTrace project. |

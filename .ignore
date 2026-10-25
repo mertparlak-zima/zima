@@ -54,3 +54,5 @@ projects/**/.externalNativeBuild/
 projects/**/captures/
 projects/**/*.local
 projects/**/*.log
+projects/tahmin-ligi/backups/
+projects/tahmin-ligi/.vercel/

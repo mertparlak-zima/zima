@@ -1,153 +1,229 @@
 {
-  "version": 1,
-  "org": "mertparlak-zima",
   "defaults": {
     "owner_type": "ours",
     "branch": "main"
   },
+  "org": "mertparlak-zima",
   "repos": [
     {
-      "name": "drive-trace",
+      "state_note": "artifacts/device-evidence (permanent acceptance evidence; never uploaded)",
+      "stack": "Android/Kotlin offline dashcam, GPS and telemetry logger (Compose, Hilt, Room, CameraX, MapLibre)",
+      "local_state": "irreplaceable",
       "product": "DriveTrace",
       "github": "https://github.com/mertparlak-zima/drive-trace.git",
-      "path": "projects/drive-trace",
-      "owner_type": "ours",
-      "default_branch": "main",
-      "stack": "Android/Kotlin offline dashcam, GPS and telemetry logger (Compose, Hilt, Room, CameraX, MapLibre)",
-      "runner": {
-        "label": "drive-trace",
-        "container": "dt-docker-1",
-        "lifecycle": "keep-off-between-tasks",
-        "compose": "D:\\development\\drive-trace\\docker-runner",
-        "label_status": "pending-migration"
-      },
-      "ci_workflows": ["ci.yml", "issue-governance.yml", "release-candidate.yml"],
-      "docs": {
-        "readme": "README.md",
-        "agents": "AGENTS.md",
-        "skills": "docs/agent-skills.md",
-        "key": ["docs/ROADMAP.md", "docs/architecture.md", "docs/data-model.md", "docs/data-integrity.md", "docs/device-test-runbook.md"]
-      },
-      "skills_locations": [".opencode/skills"],
-      "local_state": "irreplaceable",
-      "state_note": "artifacts/device-evidence (permanent acceptance evidence; never uploaded)",
+      "skills_locations": [
+        ".opencode/skills"
+      ],
       "quirks": [
         "compose-outside-workspace",
         "runner-label-pending-migration",
         "mandatory-startup-set-overhead-faz-b",
         "external-worktree-d-development-drive-trace-worktrees"
-      ]
+      ],
+      "defer_reason": null,
+      "default_branch": "main",
+      "path": "projects/drive-trace",
+      "runner": {
+        "label_status": "pending-migration",
+        "compose": "D:\\development\\drive-trace\\docker-runner",
+        "container": "dt-docker-1",
+        "lifecycle": "keep-off-between-tasks",
+        "label": "drive-trace"
+      },
+      "ci_workflows": [
+        "ci.yml",
+        "issue-governance.yml",
+        "release-candidate.yml"
+      ],
+      "owner_type": "ours",
+      "docs": {
+        "agents": "AGENTS.md",
+        "readme": "README.md",
+        "key": [
+          "docs/ROADMAP.md",
+          "docs/architecture.md",
+          "docs/data-model.md",
+          "docs/data-integrity.md",
+          "docs/device-test-runbook.md"
+        ],
+        "skills": "docs/agent-skills.md"
+      },
+      "deferred": false,
+      "name": "drive-trace"
     },
     {
-      "name": "coin-tracker",
+      "state_note": null,
+      "stack": "TypeScript Gea Vite manual technical-analysis helper for Binance USDt-M Futures (no trading, no AI, no backend)",
+      "local_state": "clean",
       "product": "Coin Tracker",
       "github": "https://github.com/mertparlak-zima/coin-tracker.git",
-      "path": "projects/coin-tracker",
-      "owner_type": "ours",
-      "default_branch": "main",
-      "stack": "TypeScript Gea Vite manual technical-analysis helper for Binance USDt-M Futures (no trading, no AI, no backend)",
-      "runner": {
-        "label": "coin-tracker",
-        "container": "ct-docker-1",
-        "lifecycle": "leave-running",
-        "compose": "infra/runner/compose.yml",
-        "label_status": "compliant"
-      },
-      "ci_workflows": ["ci.yml"],
-      "docs": {
-        "readme": "README.md",
-        "agents": "AGENTS.md",
-        "skills": null,
-        "key": ["docs/product/roadmap.md", "docs/README.md"]
-      },
-      "skills_locations": [".agents/skills"],
-      "local_state": "clean",
-      "state_note": null,
+      "skills_locations": [
+        ".agents/skills"
+      ],
       "quirks": [
         "ci-needs-concurrency-group",
         "ci-needs-pr-branch-filter"
-      ]
+      ],
+      "defer_reason": null,
+      "default_branch": "main",
+      "path": "projects/coin-tracker",
+      "runner": {
+        "label_status": "compliant",
+        "compose": "infra/runner/compose.yml",
+        "container": "ct-docker-1",
+        "lifecycle": "leave-running",
+        "label": "coin-tracker"
+      },
+      "ci_workflows": [
+        "ci.yml"
+      ],
+      "owner_type": "ours",
+      "docs": {
+        "agents": "AGENTS.md",
+        "readme": "README.md",
+        "key": [
+          "docs/product/roadmap.md",
+          "docs/README.md"
+        ],
+        "skills": null
+      },
+      "deferred": false,
+      "name": "coin-tracker"
     },
     {
-      "name": "call-tracker",
+      "state_note": "private/ (AVD avd-8, keystores, personal build scripts) + .planning/ acceptance evidence; TELEGRAM_BOT_TOKEN env name shared with workspace JARVIS (isolation note)",
+      "stack": "Android/Kotlin single full-screen WebView app with local cellular-call metadata collection (no audio); package dev.dailymoods.app",
+      "local_state": "irreplaceable",
       "product": "Daily Moods",
       "github": "https://github.com/mertparlak-zima/call-tracker.git",
-      "path": "projects/call-tracker",
-      "owner_type": "ours",
-      "default_branch": "main",
-      "stack": "Android/Kotlin single full-screen WebView app with local cellular-call metadata collection (no audio); package dev.dailymoods.app",
-      "runner": {
-        "label": "daily-moods",
-        "container": "dm-docker-1",
-        "lifecycle": "stop-when-idle",
-        "compose": "infra/runner/compose.yml",
-        "label_status": "rename-pending-target-call-tracker"
-      },
-      "ci_workflows": ["ci.yml"],
-      "docs": {
-        "readme": "README.md",
-        "agents": "AGENTS.md",
-        "skills": "skills/daily-moods-product/SKILL.md",
-        "key": ["skills/daily-moods-workflow/SKILL.md"]
-      },
-      "skills_locations": ["skills"],
-      "local_state": "irreplaceable",
-      "state_note": "private/ (AVD avd-8, keystores, personal build scripts) + .planning/ acceptance evidence; TELEGRAM_BOT_TOKEN env name shared with workspace JARVIS (isolation note)",
+      "skills_locations": [
+        "skills"
+      ],
       "quirks": [
         "product-name-mismatch-daily-moods",
         "runner-label-migration-pending",
         "a2-preamble-non-destructive-patch-required",
         "hardcoded-abs-paths-planning-private"
-      ]
+      ],
+      "defer_reason": null,
+      "default_branch": "main",
+      "path": "projects/call-tracker",
+      "runner": {
+        "label_status": "rename-pending-target-call-tracker",
+        "compose": "infra/runner/compose.yml",
+        "container": "dm-docker-1",
+        "lifecycle": "stop-when-idle",
+        "label": "daily-moods"
+      },
+      "ci_workflows": [
+        "ci.yml"
+      ],
+      "owner_type": "ours",
+      "docs": {
+        "agents": "AGENTS.md",
+        "readme": "README.md",
+        "key": [
+          "skills/daily-moods-workflow/SKILL.md"
+        ],
+        "skills": "skills/daily-moods-product/SKILL.md"
+      },
+      "deferred": false,
+      "name": "call-tracker"
     },
     {
-      "name": "lg-tv-channel-sort",
+      "state_note": null,
+      "stack": "Python tooling for LG 42LB652V-ZA (webOS 1.4) GlobalClone TLL satellite channel lists (Turksat 42E), USB export/import",
+      "local_state": "clean",
       "product": "LG Channel List Editor",
       "github": "https://github.com/mertparlak-zima/lg-channel-import.git",
-      "path": "projects/lg-tv-channel-sort",
-      "owner_type": "ours",
-      "default_branch": "main",
-      "stack": "Python tooling for LG 42LB652V-ZA (webOS 1.4) GlobalClone TLL satellite channel lists (Turksat 42E), USB export/import",
-      "runner": null,
-      "ci_workflows": [],
-      "docs": {
-        "readme": "README.md",
-        "agents": "AGENTS.md",
-        "skills": ".claude/skills/lg-tll-channel-editing/SKILL.md",
-        "key": [".claude/skills/lg-42lb652v-tv/SKILL.md"]
-      },
-      "skills_locations": [".claude/skills"],
-      "local_state": "clean",
-      "state_note": null,
+      "skills_locations": [
+        ".claude/skills"
+      ],
       "quirks": [
         "github-name-mismatch-lg-channel-import",
         "no-ci-by-design"
-      ]
-    },
-    {
-      "name": "str-fixer",
-      "product": "str-fixer",
-      "github": "https://github.com/mertparlak-zima/str-fixer.git",
-      "path": "projects/str-fixer",
-      "owner_type": "ours",
+      ],
+      "defer_reason": null,
       "default_branch": "main",
-      "stack": "Python Turkish subtitle toolkit: encoding repair (fix_srt.py), re-sync vs reference (resync_srt.py), PGS OCR extraction (extract_pgs.py)",
+      "path": "projects/lg-tv-channel-sort",
       "runner": null,
       "ci_workflows": [],
+      "owner_type": "ours",
       "docs": {
-        "readme": "README.md",
         "agents": "AGENTS.md",
-        "skills": ".claude/skills/srt-fixing/SKILL.md",
-        "key": [".claude/skills/srt-resync/SKILL.md", ".claude/skills/pgs-extract/SKILL.md", "scripts/fix_srt.py", "scripts/resync_srt.py", "scripts/extract_pgs.py"]
+        "readme": "README.md",
+        "key": [
+          ".claude/skills/lg-42lb652v-tv/SKILL.md"
+        ],
+        "skills": ".claude/skills/lg-tll-channel-editing/SKILL.md"
       },
-      "skills_locations": [".claude/skills"],
-      "local_state": "irreplaceable",
+      "deferred": false,
+      "name": "lg-tv-channel-sort"
+    },
+    {
       "state_note": "input/, output/, samples/ and root .srt files are local-only irreplaceable media (never committed)",
+      "stack": "Python Turkish subtitle toolkit: encoding repair (fix_srt.py), re-sync vs reference (resync_srt.py), PGS OCR extraction (extract_pgs.py)",
+      "local_state": "irreplaceable",
+      "product": "str-fixer",
+      "github": "https://github.com/mertparlak-zima/str-fixer.git",
+      "skills_locations": [
+        ".claude/skills"
+      ],
       "quirks": [
         "media-files-never-committed",
         "no-ci-by-design"
-      ]
+      ],
+      "defer_reason": null,
+      "default_branch": "main",
+      "path": "projects/str-fixer",
+      "runner": null,
+      "ci_workflows": [],
+      "owner_type": "ours",
+      "docs": {
+        "agents": "AGENTS.md",
+        "readme": "README.md",
+        "key": [
+          ".claude/skills/srt-resync/SKILL.md",
+          ".claude/skills/pgs-extract/SKILL.md",
+          "scripts/fix_srt.py",
+          "scripts/resync_srt.py",
+          "scripts/extract_pgs.py"
+        ],
+        "skills": ".claude/skills/srt-fixing/SKILL.md"
+      },
+      "deferred": false,
+      "name": "str-fixer"
+    },
+    {
+      "github": "https://github.com/mertparlak-zima/tahmin-ligi.git",
+      "skills_locations": [
+        ".agents/skills"
+      ],
+      "owner_type": "ours",
+      "path": "projects/tahmin-ligi",
+      "runner": null,
+      "name": "tahmin-ligi",
+      "state_note": "backups/ contains local Supabase data snapshots; product .env/.env.local and .vercel linkage remain local",
+      "ci_workflows": [],
+      "quirks": [
+        "vercel-deployment",
+        "local-db-backups",
+        "product-env-required-for-live-db"
+      ],
+      "stack": "Gea TypeScript Vite SPA, Vercel serverless, Supabase Postgres, ESPN fixtures",
+      "docs": {
+        "readme": "README.md",
+        "agents": "AGENTS.md",
+        "skills": ".agents/skills/gea-framework/SKILL.md",
+        "key": [
+          "docs/gea-upstream-bugs.md"
+        ]
+      },
+      "local_state": "irreplaceable",
+      "product": "Tahmin Ligi",
+      "default_branch": "main"
     }
   ],
-  "third_party": []
+  "third_party": [],
+  "version": 1
 }

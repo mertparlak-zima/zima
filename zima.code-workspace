@@ -23,6 +23,10 @@
                     {
                         "name":  "str-fixer",
                         "path":  "projects/str-fixer"
+                    },
+                    {
+                        "name":  "tahmin-ligi",
+                        "path":  "projects/tahmin-ligi"
                     }
                 ],
     "settings":  {

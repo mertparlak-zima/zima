@@ -1,6 +1,6 @@
 # zima
 
-Workspace meta-repo for five independent Git repositories, all active under
+Workspace meta-repo for six independent Git repositories, all active under
 `projects/`. Shared machine infrastructure stays in its existing locations.
 zima holds the rules, the manifest (`repos.json`),
 workspace docs, agent skills and orchestration scripts. Member repos live under `projects/`
@@ -9,7 +9,7 @@ workspace docs, agent skills and orchestration scripts. Member repos live under 
 **Start at [AGENTS.md](AGENTS.md).** It is the router: startup protocol, chain of command,
 Telegram/runners/issues policies, and the skill index.
 
-Current stage: all five catalogued projects are active under `projects/`;
+Current stage: all six catalogued projects are active under `projects/`;
 see the [workspace setup record](docs/partial-migration-2026-10-23.md).
 [Readiness and audit](docs/a1-readiness.md) records verified results and remaining gates.
 Each agent reads AGENTS.md, the target repo card and that repo's rules/skills before work.
