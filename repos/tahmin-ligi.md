@@ -21,8 +21,10 @@
 
 ## CI and deployment
 
-Vercel deployment; no GitHub Actions/self-hosted runner configured. Existing
-Vercel linkage is retained. Workspace adoption does not deploy the application.
+Workflow: `ci.yml` (`npm ci`, `npm run test:server`, `npm run build`).
+Runner: `tahmin-ligi-docker-1`, label `tahmin-ligi` (`[self-hosted, linux, x64, docker, tahmin-ligi]`),
+lifecycle **stop-when-idle**, compose `infra/runner/compose.yml` (start via `scripts/start-ci-runner.ps1`).
+GitHub-hosted runners are forbidden. Vercel deployment linkage is retained alongside local Docker CI.
 
 ## Workspace quirks
 

@@ -21,11 +21,9 @@ creates a merge commit. See [workspace rules](../AGENTS.md).
   source fields and a DEFERRED reason. Normal verification explicitly reports excluded
   source/Git/docs/preamble checks; active members retain every existing check.
   Runner queries are scoped to each active container; excluded runners are not inspected.
-- `tests/run-tests.ps1` + `tests/fixtures/` - schema, path, generation, CLI, Git state,
-  external failure, lock race/ownership and Full verification regressions.
-  Run after ANY change to zima.ps1 or repos.schema.json.
-- `tests/deferred-tests.ps1` - synthetic exclusion/default/schema/generation/CLI and
-  no-probe regressions. It never accesses actual member sources, runners or networks.
+- `tests/run-tests.ps1` + `tests/fixtures/` - fast in-memory manifest, runner rule,
+  path, deferred-member and generated artifact checks. Run after ANY change to
+  zima.ps1 or repos.schema.json.
 - Exit contract for verify: 0 PASS / 2 PASS_WITH_WARNINGS / 1 FAIL.
 - `verify -Pending` defers absent member checks only; generated drift remains an error.
   Pending is accepted only with exact `A1` in `.local-state/migration/PHASE`, or no

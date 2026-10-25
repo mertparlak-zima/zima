@@ -23,7 +23,7 @@
   "definitions": {
     "repo": {
       "type": "object",
-      "required": ["name", "product", "github", "path", "stack", "ci_workflows", "docs", "skills_locations", "local_state", "quirks"],
+      "required": ["name", "product", "github", "path", "stack", "runner", "ci_workflows", "docs", "skills_locations", "local_state", "quirks"],
       "additionalProperties": false,
       "properties": {
         "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "description": "slug = directory name under projects/ = runner label basis; lowercase, case-unique" },
@@ -36,21 +36,16 @@
         "defer_reason": { "type": ["string", "null"], "minLength": 1, "description": "A non-whitespace reason is required when deferred is true." },
         "stack": { "type": "string", "minLength": 1 },
         "runner": {
-          "oneOf": [
-            { "type": "null" },
-            {
-              "type": "object",
-              "required": ["label", "container", "lifecycle", "label_status"],
-              "additionalProperties": false,
-              "properties": {
-                "label": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-                "container": { "type": "string", "minLength": 1 },
-                "lifecycle": { "enum": ["keep-off-between-tasks", "leave-running", "stop-when-idle"] },
-                "compose": { "type": ["string", "null"], "description": "absolute external root (D:\\...) or path relative to the repo root" },
-                "label_status": { "enum": ["compliant", "pending-migration", "rename-pending-target-call-tracker"] }
-              }
-            }
-          ]
+          "type": "object",
+          "required": ["label", "container", "lifecycle", "compose", "label_status"],
+          "additionalProperties": false,
+          "properties": {
+            "label": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+            "container": { "type": "string", "minLength": 1 },
+            "lifecycle": { "enum": ["keep-off-between-tasks", "leave-running", "stop-when-idle"] },
+            "compose": { "type": "string", "minLength": 1, "description": "absolute external root (D:\\...) or path relative to the repo root" },
+            "label_status": { "enum": ["compliant", "pending-migration", "rename-pending-target-call-tracker"] }
+          }
         },
         "ci_workflows": { "type": "array", "items": { "type": "string", "pattern": "^[\\w.-]+\\.ya?ml$" } },
         "docs": {

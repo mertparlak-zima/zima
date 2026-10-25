@@ -22,6 +22,11 @@ metadata: {}
 - `defaults` apply only where a repo does not override.
 - `name` = directory slug = runner-label basis (lowercase, case-unique). GitHub repo name
   may differ (lg-tv-channel-sort ↔ lg-channel-import) — the `github` field is exact.
+- Every repo entry MUST declare a non-null `runner` object (`label`, `container`,
+  `lifecycle`, `compose`, `label_status`) and a non-empty `ci_workflows` array (`no-ci-by-design`
+  is forbidden). Every `.github/workflows/*.y*ml` file in the repo must be listed in
+  `ci_workflows` and every job `runs-on` must target `self-hosted` and `docker` (GitHub-hosted
+  runners are forbidden).
 - `local_state: irreplaceable` forbids auto-clone (STOP-and-notify) — see
   `docs/local-state.md` for the inventory and backup policy.
 - `third_party[]` entries: `trusted: false` and a path OUTSIDE the zima tree (their

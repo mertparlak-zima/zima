@@ -26,7 +26,9 @@ history, CI and rules. zima provides surface-level oversight only.
    record) in the task log. Do not start implementation before reading them.
 7. Repo-local rules win over zima for project-specific work — EXCEPT the never-loosened
    set: secrets handling, chain of command, one-way Telegram, git boundaries (never treat
-   `projects/` as one repo; run git only at the verified repo root), evidence retention,
+   `projects/` as one repo; run git only at the verified repo root), local Docker CI runners
+   only (GitHub-hosted CI and `no-ci` exemptions are forbidden; every repo runs CI on its
+   own local self-hosted Docker runner), evidence retention,
    review-tier minimums, issue standard (legacy issues are read-only; `gh` writes are
    leader-only). Member adoption follows the [workspace record](docs/workspace.md); deferred members
    keep their existing rules/location until a separate authorized transition.
@@ -64,10 +66,14 @@ Usage and message format: `docs/telegram/NOTIFICATIONS.md`.
 
 ## CI runners — summary
 
-Self-hosted, one shared Docker engine, one container per repo (`<repo>-docker-N`, label =
-repo slug; labels are ROUTING, not isolation — isolation comes from per-repo registration).
+Every repository in the workspace (existing and newly onboarded) MUST have CI workflows
+configured to run on its own local self-hosted Docker runner (`<repo>-docker-N`, label =
+repo slug; labels are ROUTING, not isolation — isolation comes from per-repo registration)
+on the shared local Docker engine. GitHub-hosted runners (`ubuntu-latest`, `windows-*`,
+`macos-*`, etc.) and `no-ci` exemptions are FORBIDDEN; inherited upstream workflows in forks
+must be migrated to the repo's local self-hosted Docker runner during onboarding.
 NEVER stop/restart another repo's runner and NEVER quit/restart Docker Desktop without
-`zima.ps1 locks list` clean + user approval. Label add/rename sequences: `docs/runners.md`.
+`zima.ps1 locks list` clean + user approval. Policy and sequences: `docs/runners.md`.
 
 ## Workspace rules
 

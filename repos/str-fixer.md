@@ -21,11 +21,15 @@
   [pgs-extract](../projects/str-fixer/.claude/skills/pgs-extract/SKILL.md)
 - Tools: [fix_srt.py](../projects/str-fixer/scripts/fix_srt.py) ·
   [resync_srt.py](../projects/str-fixer/scripts/resync_srt.py) (`--cal`, `--audit`) ·
-  [extract_pgs.py](../projects/str-fixer/scripts/extract_pgs.py)
+  [extract_pgs.py](../projects/str-fixer/scripts/extract_pgs.py) ·
+  [selftest_suite.py](../projects/str-fixer/scripts/selftest_suite.py)
 
 ## CI and runner
 
-None by design.
+Workflow: `ci.yml` (`scripts/selftest_suite.py` synthetic round-trip + track-selection suite).
+Runner: `str-fixer-docker-1`, label `str-fixer` (`[self-hosted, linux, x64, docker, str-fixer]`),
+lifecycle **stop-when-idle**, compose `infra/runner/compose.yml` (start via `scripts/start-ci-runner.ps1`).
+GitHub-hosted runners are forbidden.
 
 ## Workspace quirks
 

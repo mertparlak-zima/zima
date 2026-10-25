@@ -19,12 +19,13 @@
 
 ## CI and runner
 
-Inherited source workflows use GitHub-hosted runners: `build-debug-apk.yml`, `build-test-auto.yml`.
-They are upstream workflows, not evidence that the archive is implemented or verified.
-P03 audits the project CI. Workspace-managed `ci_workflows` remains empty until that setup;
-the manifest requires an associated runner label before registering managed CI.
-No local runner, container or signing key is provisioned by this bootstrap.
-Follow [onboarding](../.agents/skills/zima-new-repo/SKILL.md) before future runner setup.
+Target runner: `heliboard-archive-docker-1`, label `heliboard-archive`
+(`[self-hosted, linux, x64, docker, heliboard-archive]`), lifecycle **stop-when-idle**,
+compose `infra/runner/compose.yml`, workflow `ci.yml`.
+Inherited upstream workflows (`build-debug-apk.yml`, `build-test-auto.yml`) are being replaced
+in P03 with the local self-hosted Docker runner; GitHub-hosted runners (`ubuntu-latest`, etc.)
+are forbidden by workspace policy. Follow [onboarding](../.agents/skills/zima-new-repo/SKILL.md)
+and [runner policy](../docs/runners.md).
 
 ## Workspace quirks and leader notes
 

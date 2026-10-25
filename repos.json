@@ -135,20 +135,28 @@
         ".claude/skills"
       ],
       "quirks": [
-        "github-name-mismatch-lg-channel-import",
-        "no-ci-by-design"
+        "github-name-mismatch-lg-channel-import"
       ],
       "defer_reason": null,
       "default_branch": "main",
       "path": "projects/lg-tv-channel-sort",
-      "runner": null,
-      "ci_workflows": [],
+      "runner": {
+        "label_status": "compliant",
+        "compose": "infra/runner/compose.yml",
+        "container": "lg-tv-channel-sort-docker-1",
+        "lifecycle": "stop-when-idle",
+        "label": "lg-tv-channel-sort"
+      },
+      "ci_workflows": [
+        "ci.yml"
+      ],
       "owner_type": "ours",
       "docs": {
         "agents": "AGENTS.md",
         "readme": "README.md",
         "key": [
-          ".claude/skills/lg-42lb652v-tv/SKILL.md"
+          ".claude/skills/lg-42lb652v-tv/SKILL.md",
+          "scripts/verify_channel_list.py"
         ],
         "skills": ".claude/skills/lg-tll-channel-editing/SKILL.md"
       },
@@ -165,14 +173,21 @@
         ".claude/skills"
       ],
       "quirks": [
-        "media-files-never-committed",
-        "no-ci-by-design"
+        "media-files-never-committed"
       ],
       "defer_reason": null,
       "default_branch": "main",
       "path": "projects/str-fixer",
-      "runner": null,
-      "ci_workflows": [],
+      "runner": {
+        "label_status": "compliant",
+        "compose": "infra/runner/compose.yml",
+        "container": "str-fixer-docker-1",
+        "lifecycle": "stop-when-idle",
+        "label": "str-fixer"
+      },
+      "ci_workflows": [
+        "ci.yml"
+      ],
       "owner_type": "ours",
       "docs": {
         "agents": "AGENTS.md",
@@ -182,7 +197,8 @@
           ".claude/skills/pgs-extract/SKILL.md",
           "scripts/fix_srt.py",
           "scripts/resync_srt.py",
-          "scripts/extract_pgs.py"
+          "scripts/extract_pgs.py",
+          "scripts/selftest_suite.py"
         ],
         "skills": ".claude/skills/srt-fixing/SKILL.md"
       },
@@ -196,10 +212,18 @@
       ],
       "owner_type": "ours",
       "path": "projects/tahmin-ligi",
-      "runner": null,
+      "runner": {
+        "label_status": "compliant",
+        "compose": "infra/runner/compose.yml",
+        "container": "tahmin-ligi-docker-1",
+        "lifecycle": "stop-when-idle",
+        "label": "tahmin-ligi"
+      },
       "name": "tahmin-ligi",
       "state_note": "backups/ contains local Supabase data snapshots; product .env/.env.local and .vercel linkage remain local",
-      "ci_workflows": [],
+      "ci_workflows": [
+        "ci.yml"
+      ],
       "quirks": [
         "vercel-deployment",
         "local-db-backups",
@@ -223,10 +247,18 @@
       "skills_locations": [],
       "owner_type": "ours",
       "path": "projects/heliboard-archive",
-      "runner": null,
+      "runner": {
+        "label_status": "pending-migration",
+        "compose": "infra/runner/compose.yml",
+        "container": "heliboard-archive-docker-1",
+        "lifecycle": "stop-when-idle",
+        "label": "heliboard-archive"
+      },
       "name": "heliboard-archive",
-      "state_note": "Source clone; archive application code and signing material not yet introduced. Inherited GitHub-hosted CI awaits P03 audit. No local runner provisioned.",
-      "ci_workflows": [],
+      "state_note": "Source clone; archive application code and signing material not yet introduced. Inherited GitHub-hosted CI awaits P03 replacement with local Docker runner heliboard-archive-docker-1.",
+      "ci_workflows": [
+        "ci.yml"
+      ],
       "quirks": [
         "upstream-heliboard-fork",
         "inherited-github-hosted-ci-awaiting-audit",

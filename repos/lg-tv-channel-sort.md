@@ -18,10 +18,14 @@
 - Main skill (read fully before ANY TLL edit): [lg-tll-channel-editing](../projects/lg-tv-channel-sort/.claude/skills/lg-tll-channel-editing/SKILL.md)
 - References: [file-format](../projects/lg-tv-channel-sort/.claude/skills/lg-tll-channel-editing/references/file-format.md) · [verification](../projects/lg-tv-channel-sort/.claude/skills/lg-tll-channel-editing/references/verification.md)
 - Device profile: [lg-42lb652v-tv](../projects/lg-tv-channel-sort/.claude/skills/lg-42lb652v-tv/SKILL.md)
+- Verification script: [verify_channel_list.py](../projects/lg-tv-channel-sort/scripts/verify_channel_list.py)
 
 ## CI and runner
 
-None by design (no workflows, no runner).
+Workflow: `ci.yml` (`build_channel_list.py` + `verify_channel_list.py`). Runner:
+`lg-tv-channel-sort-docker-1`, label `lg-tv-channel-sort` (`[self-hosted, linux, x64, docker, lg-tv-channel-sort]`),
+lifecycle **stop-when-idle**, compose `infra/runner/compose.yml` (start via `scripts/start-ci-runner.ps1`).
+GitHub-hosted runners are forbidden.
 
 ## Workspace quirks
 

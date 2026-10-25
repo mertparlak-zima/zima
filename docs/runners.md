@@ -6,12 +6,18 @@ re-run gen. Machine paths live in `.env`.
 
 ## Standard
 
+- Every workspace repository (existing and newly onboarded; no `no-ci` exceptions) MUST
+  have CI workflows and a dedicated local self-hosted Docker runner container registered
+  exclusively to that repository. GitHub-hosted runners (`ubuntu-latest`, `windows-*`,
+  `macos-*`, etc.) are strictly forbidden. Inherited upstream workflows in forks must be
+  migrated to the repository's local self-hosted Docker runner during onboarding.
 - Label set (all lowercase): `[self-hosted, linux, x64, docker, <repo-slug>]`. The repo
   slug label is mandatory and unique per repo.
 - Labels are ROUTING/SELECTION, not isolation. Isolation comes from per-repo runner
   registration (a runner registered to exactly one repo physically cannot pick another
   repo's jobs) plus least-privilege hardening below.
-- New container name: `<repo-slug>-docker-N`. Existing `dt/ct/dm` names in the registry
+- New container name: `<repo-slug>-docker-N` (`infra/runner/compose.yml` +
+  `scripts/start-ci-runner.ps1`). Existing `dt/ct/dm` names in the registry
   are recorded legacy names; renaming them is not implied by workspace cutover.
 - Runner groups are org-only (not available for personal accounts) - per-repo
   registration is the isolation mechanism here.
@@ -45,6 +51,10 @@ re-run gen. Machine paths live in `.env`.
 | drive-trace | keep-off-between-tasks | started per task, stopped after; Docker Desktop quit only when nothing else runs |
 | coin-tracker | leave-running | owner decision 2026-10-07 |
 | call-tracker | stop-when-idle | stopped between CI bursts |
+| lg-tv-channel-sort | stop-when-idle | owner decision 2026-10-26; stopped between CI bursts |
+| str-fixer | stop-when-idle | owner decision 2026-10-26; stopped between CI bursts |
+| tahmin-ligi | stop-when-idle | owner decision 2026-10-26; stopped between CI bursts |
+| heliboard-archive | stop-when-idle | owner decision 2026-10-26; stopped between CI bursts |
 
 ## Label add sequence (when a runner lacks its repo label)
 
@@ -81,4 +91,8 @@ inspect or operate that member's runner/jobs until its authorized reactivation.
 | drive-trace | active | dt-docker-1 | (shared pool - no repo label yet) | drive-trace | keep-off-between-tasks | D:\development\drive-trace\docker-runner |
 | coin-tracker | active | ct-docker-1 | coin-tracker | coin-tracker | leave-running | infra/runner/compose.yml |
 | call-tracker | active | dm-docker-1 | daily-moods | call-tracker | stop-when-idle | infra/runner/compose.yml |
+| lg-tv-channel-sort | active | lg-tv-channel-sort-docker-1 | lg-tv-channel-sort | lg-tv-channel-sort | stop-when-idle | infra/runner/compose.yml |
+| str-fixer | active | str-fixer-docker-1 | str-fixer | str-fixer | stop-when-idle | infra/runner/compose.yml |
+| tahmin-ligi | active | tahmin-ligi-docker-1 | tahmin-ligi | tahmin-ligi | stop-when-idle | infra/runner/compose.yml |
+| heliboard-archive | active | heliboard-archive-docker-1 | (shared pool - no repo label yet) | heliboard-archive | stop-when-idle | infra/runner/compose.yml |
 <!-- END GENERATED RUNNER REGISTRY -->

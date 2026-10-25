@@ -18,6 +18,7 @@ gates and infrastructure. Current setup: [workspace.md](workspace.md).
 | 2026-10-19 | Folder README convention (D19): every committed folder carries a short technical README; exceptions whitelisted in verify | workspace navigability for agents and humans |
 | 2026-10-19 | Deferred cutover: zima built in `projects/zima` while old workspace keeps running; single maintenance window moves repos with their uncommitted changes; old root ends containing only `zima/` | user decision — zero-interruption build, atomic switch |
 | 2026-10-21 | A1.4 live agent startup/context tests WAIVED; no custom launcher or model/profile answer required. Agents read documents and record the relevant rules read | explicit user decision; see [scope and preserved gates](#agent-startup-decision--2026-10-21) |
+| 2026-10-26 | Mandatory local self-hosted Docker CI runner for ALL workspace repos (existing and newly onboarded). GitHub-hosted runners (`ubuntu-latest`, etc.) and `no-ci-by-design` exemptions are forbidden; every repo runs CI on `<repo-slug>-docker-N` with lifecycle `stop-when-idle` unless otherwise specified | owner decision; enforced by `repos.schema.json` and `zima.ps1 verify` |
 
 ## Factual correction — 2026-10-20
 
