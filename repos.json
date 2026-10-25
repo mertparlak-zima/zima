@@ -53,16 +53,13 @@
     },
     {
       "state_note": null,
-      "stack": "TypeScript Gea Vite manual technical-analysis helper for Binance USDt-M Futures (no trading, no AI, no backend)",
+      "stack": "TypeScript Gea Vite empty base website (product cancelled 2026-10-26, re-planning); Vitest smoke; Node 24; self-hosted CI",
       "local_state": "clean",
       "product": "Coin Tracker",
       "github": "https://github.com/mertparlak-zima/coin-tracker.git",
-      "skills_locations": [
-        ".agents/skills"
-      ],
+      "skills_locations": [],
       "quirks": [
-        "ci-needs-concurrency-group",
-        "ci-needs-pr-branch-filter"
+        "github-roadmap-json-stale-until-replan"
       ],
       "defer_reason": null,
       "default_branch": "main",
@@ -82,8 +79,7 @@
         "agents": "AGENTS.md",
         "readme": "README.md",
         "key": [
-          "docs/product/roadmap.md",
-          "docs/README.md"
+          "docs/reset-2026-10-26.md"
         ],
         "skills": null
       },

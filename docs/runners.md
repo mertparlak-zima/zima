@@ -70,9 +70,8 @@ inspect or operate that member's runner/jobs until its authorized reactivation.
   sequence above). Until then dt workflows run on the shared `[self-hosted, docker]` pool.
 - call-tracker: label rename sequence above (coordinate with `scripts/ci-policy.mjs`
   contract test in one change).
-- coin-tracker: add `concurrency: group: ci-${{ github.ref }}, cancel-in-progress: true`
-  and `pull_request: branches: [main]` to ci.yml.
 - Normalize label casing to lowercase in policy scripts (ci-policy.mjs / ci-policy-core.cjs).
+- coin-tracker ci.yml concurrency + PR-branch filter: DONE 2026-10-26 (with the repo reset).
 
 ## Registry (GENERATED)
 
