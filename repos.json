@@ -8,8 +8,6 @@
   "repos": [
     {
       "name": "drive-trace",
-      "deferred": true,
-      "defer_reason": "User exclusion 2026-10-23: another agent is active; leave old-root source, worktrees and runner untouched",
       "product": "DriveTrace",
       "github": "https://github.com/mertparlak-zima/drive-trace.git",
       "path": "projects/drive-trace",

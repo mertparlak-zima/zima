@@ -1,8 +1,7 @@
 # zima
 
-Workspace meta-repo for `C:\Users\mertp\Desktop\projects` — manages five independent git
-repositories in its catalog. Four are eligible for the current partial adoption;
-DriveTrace is deferred while another agent works in its old-root location.
+Workspace meta-repo for five independent Git repositories, all active under
+`projects/`. Shared machine infrastructure stays in its existing locations.
 zima holds the rules, the manifest (`repos.json`),
 workspace docs, agent skills and orchestration scripts. Member repos live under `projects/`
 (gitignored) and keep their own history, CI and rules.
@@ -10,12 +9,11 @@ workspace docs, agent skills and orchestration scripts. Member repos live under 
 **Start at [AGENTS.md](AGENTS.md).** It is the router: startup protocol, chain of command,
 Telegram/runners/issues policies, and the skill index.
 
-Current stage: four projects are available under `projects/`; see the
-[workspace setup](docs/partial-migration-2026-10-23.md). The old four directories were removed;
-DriveTrace and shared old-root infrastructure stay in their original locations.
+Current stage: all five catalogued projects are active under `projects/`;
+see the [workspace setup record](docs/partial-migration-2026-10-23.md).
 [Readiness and audit](docs/a1-readiness.md) records verified results and remaining gates.
 Each agent reads AGENTS.md, the target repo card and that repo's rules/skills before work.
-Deferred members are metadata only; operational commands and source/runner probes skip them.
+Any future deferred member remains metadata only until explicitly reactivated.
 
 Quick reference:
 

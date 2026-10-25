@@ -52,3 +52,12 @@ lists the four eligible projects. DriveTrace, its worktrees/runner/evidence and
 shared old-root infrastructure remain outside this operation. The prior hold and
 full-workspace-only cleanup assumption are superseded for this authorized scope;
 data integrity and independent Git boundaries remain required.
+
+## DriveTrace adoption and old-root retirement - 2026-10-25
+
+The user explicitly released the DriveTrace exclusion, requested publication of
+existing local commits, and authorized deleting its old directory and the last
+two root instruction Markdown files. All five catalogued projects now use
+`zima/projects/`; [the setup record](partial-migration-2026-10-23.md) documents the
+completed operations. Existing machine/broker infrastructure stays in place.
+The earlier DriveTrace exclusion applies only to its historical partial stage.

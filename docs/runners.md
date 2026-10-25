@@ -79,7 +79,7 @@ inspect or operate its runner/jobs during the four-project transition.
 <!-- BEGIN GENERATED RUNNER REGISTRY -->
 | Repo | State | Container | Label today | Label target | Lifecycle | Compose |
 |---|---|---|---|---|---|---|
-| drive-trace | DEFERRED | dt-docker-1 | (shared pool - no repo label yet) | drive-trace | keep-off-between-tasks | D:\development\drive-trace\docker-runner |
+| drive-trace | active | dt-docker-1 | (shared pool - no repo label yet) | drive-trace | keep-off-between-tasks | D:\development\drive-trace\docker-runner |
 | coin-tracker | active | ct-docker-1 | coin-tracker | coin-tracker | leave-running | infra/runner/compose.yml |
 | call-tracker | active | dm-docker-1 | daily-moods | call-tracker | stop-when-idle | infra/runner/compose.yml |
 <!-- END GENERATED RUNNER REGISTRY -->
