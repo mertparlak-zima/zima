@@ -1,5 +1,10 @@
 # A2 readiness checklist — preparation record
 
+Historical preparation matrix, superseded by the user's simpler Git-based
+adoption and [completed workspace setup](partial-migration-2026-10-23.md).
+The old broker-copy and transaction requirements below are not current tasks.
+All six projects are active; Telegram uses the [outbound CLI](telegram/NOTIFICATIONS.md).
+
 Execution contract: [migration runbook](migration-2026-10.md).
 Evidence: [A1 audit](a1-readiness.md), [policy packet](policy-patch-pack.md),
 [local state](local-state.md). This is a status record, not permission to cut over.

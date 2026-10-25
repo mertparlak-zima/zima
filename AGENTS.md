@@ -55,13 +55,11 @@ issues → `docs/issues.md` (before creating/commenting/closing any issue).
 
 ## Telegram notifications — one-way only
 
-Only the leader may use `telegram_send_notification`; `telegram_connection_status` is
-allowed for read-only diagnostics. Denying ask/session tools in every harness is an A2
-gate, not an established A1 fact. When a blocking
-decision is needed: write a park file (`.local-state/parked/<task-id>.md`), notify with
-`[INPUT-NEEDED] ... NEEDS DECISION <task-id>` and the fixed footer "Reply here is not read.
-Decision is applied at the next session start." Full schema and matrix:
-`docs/telegram/NOTIFICATIONS.md`.
+Only the leader sends outbound messages with `scripts/telegram-notify.mjs`, reading
+the ignored root `.env`. No Telegram MCP server, listener, broker, session routing or
+reply handling is used. Ask questions in the active conversation. For unattended blocked
+work, retain a park file and notify that a decision is needed in the main conversation.
+Usage and message format: `docs/telegram/NOTIFICATIONS.md`.
 
 ## CI runners — summary
 
@@ -80,10 +78,12 @@ NEVER stop/restart another repo's runner and NEVER quit/restart Docker Desktop w
 - Automation-first (decision 2026-10-18): do yourself what you can do via tooling (adb,
   scripts, APIs) and verify by measurement; ask the user for UI only when physically
   required.
-- Machine config lives in `.env` (gitignored). Workspace automation/JARVIS credentials
-  live only in HKCU; never copy their values into files, logs, messages or commits.
+- Machine config and Telegram bot token/chat ID live in root `.env` (gitignored).
+  Never print or commit these values. Other automation credentials keep their existing
+  storage; the Telegram exception does not authorize copying unrelated credentials.
   Existing product signing/private artifacts follow repo-local protection rules; this
-  never authorizes exposing or committing secrets. `.env` must contain no secret values.
+  never authorizes exposing or committing secrets. Only the two Telegram fields may
+  hold notification credentials in `.env`; unrelated secret values remain forbidden.
 - Every committed folder carries a short technical `README.md` (what/why/rules/links).
   New folder ⇒ README in the same change. Exceptions are listed in the verify checker.
 
@@ -102,6 +102,6 @@ single source of truth; `repos/<name>.md` cards are hand-written views.
 ## Out of scope for zima
 
 Repo-internal rules and docs; repo skill contents and their storage conventions; runner
-compose files and Dockerfiles; CI workflow internals; `.jarvis-telegram-mcp/` code; the
+compose files and Dockerfiles; CI workflow internals; the
 Daily Moods product Telegram feature (separate from workspace JARVIS); third-party repo
 contents; `artifacts/` evidence.

@@ -1,7 +1,7 @@
 # zima
 
 Workspace meta-repo for six independent Git repositories, all active under
-`projects/`. Shared machine infrastructure stays in its existing locations.
+`projects/`. Local Claude settings live in ignored `.claude/`.
 zima holds the rules, the manifest (`repos.json`),
 workspace docs, agent skills and orchestration scripts. Member repos live under `projects/`
 (gitignored) and keep their own history, CI and rules.
@@ -22,10 +22,14 @@ powershell -File scripts/zima.ps1 status            # active repo states; deferr
 powershell -File scripts/zima.ps1 issues            # open issues across repos + zima
 powershell -File scripts/zima.ps1 verify -Full      # normal active-member consistency gate
 powershell -File scripts/zima.ps1 help              # all commands
+'Zima: work completed.' | node scripts/telegram-notify.mjs --silent
 ```
 
 During A1 preparation, add `-Pending` while active target directories are absent.
 Pending is forbidden during/after partial adoption and never certifies a cutover.
+
+Telegram is outbound only: the command reads its bot token and chat ID from the
+ignored root `.env`, sends one message and exits. No background service is needed.
 
 Docs: [docs/runners.md](docs/runners.md) · [docs/issues.md](docs/issues.md) ·
 [docs/telegram/NOTIFICATIONS.md](docs/telegram/NOTIFICATIONS.md) ·

@@ -8,6 +8,14 @@ creates a merge commit. See [workspace rules](../AGENTS.md).
 - `zima.ps1` - the workspace CLI: status, repo card, issues, clone, sync, update,
   new-repo, verify, gen, runners, locks. Windows PowerShell 5.1 target (pwsh 7 not
   installed on this host); file is UTF-8 WITH BOM.
+- `telegram-notify.mjs` - leader-only outbound Telegram notifications using Node 18+
+  standard libraries. Pipe message text to stdin; optional `--silent` disables the
+  notification sound. It reads only `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` from
+  the ignored `.env` next to `env.example`, independently of the current directory.
+  Never put credentials in command arguments. It sends one fixed HTTPS sendMessage
+  POST, refuses redirects, bounds the request/body read to ten seconds and emits
+  generic success/failure only. There is no incoming-message listener or service.
+  See [notification rules](../docs/telegram/NOTIFICATIONS.md).
 - A `deferred` member is metadata only. Explicit clone/sync/update/issues targets
   refuse before native validation; bulk operations skip it. Status uses null/uninspected
   source fields and a DEFERRED reason. Normal verification explicitly reports excluded
@@ -58,6 +66,9 @@ creates a merge commit. See [workspace rules](../AGENTS.md).
   marker on a fresh clone. Later/unknown markers refuse Pending in verify and status.
   `verify -Full -Pending` adds the actual rg probe, `.env` and entire-index scans.
   Duplicate `.env` keys are rejected with Windows case-insensitive semantics.
+  Only the two local Telegram credential fields are allowed and redacted from
+  `Read-ZimaEnv` maps; other credential keys and secret-shaped values remain errors.
+  This local exception never permits credentials or `.env` in indexed files.
   Every indexed blob is scanned, including unchanged tracked files; local-state,
   archive, evidence, harness/IDE and member paths are forbidden. The exact
   `projects/.gitkeep` skeleton is allowed. UTF-8/NUL index parsing preserves Unicode

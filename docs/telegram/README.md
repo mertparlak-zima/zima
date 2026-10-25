@@ -3,10 +3,10 @@
 The workspace Telegram contract lives here.
 
 ## Contents / rules
-- `NOTIFICATIONS.md` - one-way contract: message schema, when-to-notify matrix,
-  enforcement map (per-harness), park protocol, workspace-vs-product separation.
-- Nothing else goes here; broker internals are documented inside
-`.jarvis-telegram-mcp/README.md` (local infra, not committed).
+- `NOTIFICATIONS.md` - outbound command, ignored `.env` configuration, message
+  format and notification timing. Questions stay in the main agent conversation.
+- The sender is [telegram-notify.mjs](../../scripts/telegram-notify.mjs).
+  No broker, MCP server or incoming-message runtime is required.
 
 ## Related
 - [../issues.md](../issues.md) - [../../AGENTS.md](../../AGENTS.md)

@@ -4,6 +4,15 @@ Tests for the manifest validator and verify logic. No Pester dependency - plain
 assertions; exit 0 = all pass.
 
 ## Contents / rules
+- `telegram-notify.test.mjs` - offline sender tests: BOM/quotes/duplicates/missing
+  configuration, the exact HTTPS POST/body, request/body deadlines, sanitized errors
+  and CLI argument rejection. Injected fetch implementations perform no network I/O.
+  Run `node --test scripts/tests/telegram-notify.test.mjs`.
+- `telegram-env-tests.ps1` - targeted real Full verification in a synthetic empty
+  workspace: local Telegram fields are allowed but redacted, duplicates and other
+  credentials still fail, and indexed Telegram values/force-added `.env` stay forbidden.
+  It never reads the real `.env`, user environment credentials, registry or members.
+  Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/tests/telegram-env-tests.ps1`.
 - `run-tests.ps1` - dot-sources zima.ps1 (ZIMA_DOT_SOURCED=1 guard) and runs:
   schema structure and defaults, malformed and unknown fields, canonical paths and
   junction escape, exact ignore rules, D19 pruning/depth, deterministic generation,

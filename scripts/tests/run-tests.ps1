@@ -86,10 +86,10 @@ try{
  Save-M $base;$null=Invoke-FixtureGit $script:Workspace @('init','--quiet');$m=Resolve-ZimaDefaults $base
  Invoke-ZimaGen $m $script:Workspace;$first=Get-ZimaGenerated $m $script:Workspace;Invoke-ZimaGen $m $script:Workspace;$second=Get-ZimaGenerated $m $script:Workspace
  foreach($p in $first.Keys){Assert ($first[$p] -ceq $second[$p]) ('deterministic generation: '+$p)}
- $ws=Read-ZimaManifest (Join-Path $script:Workspace 'zima.code-workspace');Assert ($ws['folders'].Count -eq 6) 'workspace contains all six paths while members absent';Assert ($ws['folders'][0]['path'] -ceq '.') 'workspace root portable';Assert (@($ws['folders']|Where-Object{[IO.Path]::IsPathRooted($_['path'])}).Count -eq 0) 'workspace has no machine absolute paths'
+ $ws=Read-ZimaManifest (Join-Path $script:Workspace 'zima.code-workspace');Assert ($ws['folders'].Count -eq ($base['repos'].Count+1)) 'workspace contains root plus every fixture repo while members absent';Assert ($ws['folders'][0]['path'] -ceq '.') 'workspace root portable';Assert (@($ws['folders']|Where-Object{[IO.Path]::IsPathRooted($_['path'])}).Count -eq 0) 'workspace has no machine absolute paths'
  Write-Utf8NoBom (Join-Path $script:Workspace 'repos/repos.md') ($first['repos/repos.md'].Replace('DriveTrace','Drift'))
  $v=Invoke-ZimaVerify -Mode fast -ZimaRoot $script:Workspace -Pending;Assert (@($v.Errors|Where-Object{$_ -match 'generated artifact drift: repos/repos.md'}).Count -eq 1) 'Pending detects same-row-count generated drift';Invoke-ZimaGen $m $script:Workspace
- $c=Invoke-FixtureCli @('status','-Pending','--json');Assert ($c.Code -eq 0) 'status Pending exits zero';$obj=($c.Output -join "`n")|ConvertFrom-Json;Assert ($obj.repos.Count -eq 5) '--json emits actual parseable five repo data'
+ $c=Invoke-FixtureCli @('status','-Pending','--json');Assert ($c.Code -eq 0) 'status Pending exits zero';$obj=($c.Output -join "`n")|ConvertFrom-Json;Assert ($obj.repos.Count -eq $base['repos'].Count) '--json emits one parseable row per fixture repo'
  $c=Invoke-FixtureCli @('verify','-Fast','-Pending','--json');Assert ($c.Code -eq 0) ('verify clean exit0; actual '+$c.Code)
  $orphan=Get-ZimaSafePath $script:Workspace 'projects/orphan';$null=New-Item -ItemType Directory -Path $orphan;$c=Invoke-FixtureCli @('verify','-Fast','-Pending','--json');Assert ($c.Code -eq 2) ('verify warning exit2; actual '+$c.Code);[IO.Directory]::Delete($orphan)
  $phaseDir=Get-ZimaSafePath $script:Workspace '.local-state/migration';$null=New-Item -ItemType Directory -Force -Path $phaseDir;$phasePath=Join-Path $phaseDir 'PHASE'
@@ -103,7 +103,7 @@ try{
  Assert ([IO.File]::ReadAllText((Join-Path $script:Workspace 'repos.json')) -ceq $before) 'invalid new-repo leaves manifest unchanged'
  Assert (!(Test-Path -LiteralPath (Join-Path $tree 'escape.md'))) 'invalid new-repo no outside writes'
  $c=Invoke-FixtureCli @('new-repo','-Name','new-test','-Github','invalid','-Product','P','-Stack','S');Assert ($c.Code -eq 1) 'new-repo validates URL before write'
- $c=Invoke-FixtureCli @('new-repo','-Name','new-test','-Github','https://github.com/a/b.git','-Product','P','-Stack','S');Assert ($c.Code -eq 0) 'new-repo valid success';$ws=Read-ZimaManifest (Join-Path $script:Workspace 'zima.code-workspace');Assert ($ws['folders'].Count -eq 7) 'new-repo refreshes generated workspace';Assert ((Get-Content -LiteralPath (Join-Path $script:Workspace 'repos/repos.md') -Raw).Contains('[card](new-test.md)')) 'new-repo refreshes index'
+ $c=Invoke-FixtureCli @('new-repo','-Name','new-test','-Github','https://github.com/a/b.git','-Product','P','-Stack','S');Assert ($c.Code -eq 0) 'new-repo valid success';$ws=Read-ZimaManifest (Join-Path $script:Workspace 'zima.code-workspace');Assert ($ws['folders'].Count -eq ($base['repos'].Count+2)) 'new-repo refreshes generated workspace';Assert ((Get-Content -LiteralPath (Join-Path $script:Workspace 'repos/repos.md') -Raw).Contains('[card](new-test.md)')) 'new-repo refreshes index'
  Save-M $base;Invoke-ZimaGen $m $script:Workspace
 
  # Actual Git porcelain/index/worktree cases, all inside fixture.
@@ -183,7 +183,7 @@ try{
  $held=@(Invoke-ZimaLock $script:Workspace list);Invoke-ZimaLock $script:Workspace release race $held[0]['owner']
  $probeOK=$true;try{Test-ZimaRgProbe $script:Workspace}catch{$probeOK=$false;Write-Host $_.Exception.Message};Assert $probeOK 'real rg probe includes member source and hides secrets/build/media'
  Write-Utf8NoBom (Join-Path $script:Workspace '.env') "FOO=bar`nQUOTED=`"hello world`"`nEMPTY=`n";$map=Read-ZimaEnv $script:Workspace;Assert ($map['FOO'] -ceq 'bar' -and $map['QUOTED'] -ceq 'hello world' -and $map.ContainsKey('EMPTY')) 'actual env parser handles ordinary values'
- Write-Utf8NoBom (Join-Path $script:Workspace '.env') 'TELEGRAM_BOT_TOKEN=not-a-real-secret';$v=Invoke-ZimaVerify -Mode full -ZimaRoot $script:Workspace -Pending;Assert (@($v.Errors|Where-Object{$_ -match 'disallowed credential'}).Count -eq 1) 'Full rejects secret key without exposing value'
+ Write-Utf8NoBom (Join-Path $script:Workspace '.env') 'GH_TOKEN=not-a-real-secret';$v=Invoke-ZimaVerify -Mode full -ZimaRoot $script:Workspace -Pending;Assert (@($v.Errors|Where-Object{$_ -match 'disallowed credential'}).Count -eq 1) 'Full rejects secret key without exposing value'
  foreach($duplicate in @("TELEGRAM_BOT_TOKEN=not-a-real-secret`nTELEGRAM_BOT_TOKEN=", "TELEGRAM_BOT_TOKEN=not-a-real-secret`ntelegram_bot_token=")){
   Write-Utf8NoBom (Join-Path $script:Workspace '.env') $duplicate
   Throws {Read-ZimaEnv $script:Workspace} 'duplicate environment key rejected before overwrite'

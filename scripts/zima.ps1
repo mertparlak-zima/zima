@@ -43,7 +43,10 @@ function Read-ZimaEnv {
    if($i -le 0){throw 'Malformed .env line (contents withheld)'}
    $key=$t.Substring(0,$i).Trim()
    if($map.ContainsKey($key)){throw 'Duplicate .env key (contents withheld)'}
-   $map[$key]=$t.Substring($i+1).Trim().Trim('"')
+   # Only the outbound sender reads these local credentials. Redact them here
+   # so CLI configuration maps/diagnostics cannot accidentally expose them.
+   # All other keys/values still reach the existing Full credential scan.
+   if($key -in @('TELEGRAM_BOT_TOKEN','TELEGRAM_CHAT_ID')){$map[$key]=''}else{$map[$key]=$t.Substring($i+1).Trim().Trim('"')}
   }
  }
  return $map
@@ -320,7 +323,7 @@ function Invoke-ZimaVerify {
   if(!$st.present -or !$st.isGit -or !$st.originOk -or $st.error){$errors+="repo $($r['name']): missing, unsafe, non-root, origin mismatch or git failure";continue}
   if($st.branch -ne $st.expectedBranch){$info.Add("observed branch $($r['name']): $($st.branch) (default required only for update)")}
   foreach($doc in $links){if($null -eq $doc){continue};$p=Get-ZimaSafePath (Join-Path $ZimaRoot $r['path']) $doc;if(!(Test-Path -LiteralPath $p)){$errors+="repo $($r['name']): missing doc target $doc"}}
-  if($Mode -eq 'full'){$agentRel=$r['docs']['agents'];if(!$agentRel){$errors+="repo $($r['name']): AGENTS.md/preamble mandatory in Full";continue};$p=Get-ZimaSafePath (Join-Path $ZimaRoot $r['path']) $agentRel;$reference=(Get-Content -LiteralPath (Join-Path $ZimaRoot '.agents/skills/zima-leader/references/workspace-context.md') -Raw -Encoding UTF8).Replace('<this-repo>',$r['name']);if(!(Test-Path -LiteralPath $p) -or !(Get-Content -LiteralPath $p -Raw -Encoding UTF8).Replace("`r`n","`n").Contains($reference.Replace("`r`n","`n").Trim())){$errors+="repo $($r['name']): exact workspace preamble v1 missing"}}
+  if($Mode -eq 'full'){$agentRel=$r['docs']['agents'];if(!$agentRel){$errors+="repo $($r['name']): AGENTS.md/preamble mandatory in Full";continue};$p=Get-ZimaSafePath (Join-Path $ZimaRoot $r['path']) $agentRel;$reference=(Get-Content -LiteralPath (Join-Path $ZimaRoot '.agents/skills/zima-leader/references/workspace-context.md') -Raw -Encoding UTF8).Replace('<this-repo>',$r['name']);if(!(Test-Path -LiteralPath $p) -or !(Get-Content -LiteralPath $p -Raw -Encoding UTF8).Replace("`r`n","`n").Contains($reference.Replace("`r`n","`n").Trim())){$errors+="repo $($r['name']): exact workspace preamble missing"}}
  }
  $projectDir=Get-ZimaSafePath $ZimaRoot 'projects';$known=@($m['repos']|ForEach-Object{$_['name']})
  if(Test-Path -LiteralPath $projectDir){foreach($dir in Get-ChildItem -LiteralPath $projectDir -Directory -Force){if($dir.Name -ne '.shared' -and $known -notcontains $dir.Name){$warnings+='unregistered directory under projects/: '+$dir.Name}}}

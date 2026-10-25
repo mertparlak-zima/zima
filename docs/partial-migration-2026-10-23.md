@@ -34,7 +34,8 @@ The superseded root plan/review documents and, by explicit user request, the
 last root `AGENTS.md` and `telegram-agent-instructions.md` were removed.
 Start project sessions at [Zima AGENTS](../AGENTS.md). Notification rules are in
 [the Zima notification contract](telegram/NOTIFICATIONS.md). Existing machine
-infrastructure, broker and other unrelated directories were retained.
+infrastructure was initially retained; the Telegram simplification below supersedes
+that temporary arrangement.
 
 ## Scope and verification
 
@@ -67,8 +68,26 @@ Remaining root-folder decisions and completed actions:
 
 | Folder | Outcome |
 |---|---|
-| `.claude/` | Retained outside the meta-repo: two shared local rule/permission files; no settings copied into Zima. |
+| `.claude/` | Moved to ignored `zima/.claude/`; both local files retained. Its `CLAUDE.md` imports `../AGENTS.md` as the canonical workspace instructions. |
 | `.idea/` | Five obsolete old-root IDE metadata files removed; no run/debug/database configurations were present. |
-| `.jarvis-telegram-mcp/` | Retained as the shared running service. Moving it requires coordinated MCP/Startup/plugin paths and broker ownership; no service restart occurred. Its README now points to Zima's notification contract. |
+| `.jarvis-telegram-mcp/` | Retired and removed at the user's request. Owned MCP entries, the OpenCode loader and Startup launcher were removed; the old broker/MCP processes were stopped. Zima now uses one outbound CLI command. |
 | `.local-archives/` | Empty directory removed. |
 | `artifacts/` | Eleven unique evidence files (1,204,536 bytes) moved unchanged to ignored `zima/artifacts/`, outside the active DriveTrace project. |
+
+## Outbound Telegram - 2026-10-25
+
+The user requested a small sender instead of carrying forward JARVIS. The new
+`scripts/telegram-notify.mjs` reads only the two Telegram credentials in ignored
+root `.env`, accepts message text on stdin, sends one HTTPS `sendMessage` request
+and exits. It has no incoming-message or server path. Existing unrelated user
+environment settings remain intact. Credential values are never published.
+
+The standard local workspace prefix was updated to v2 in all six member AGENTS
+files, preserving their native instruction bodies. Member changes remain local;
+concurrent DriveTrace development is independent of this workspace cleanup.
+See [notification usage](telegram/NOTIFICATIONS.md).
+
+Verification passed: 151 baseline assertions, eight offline sender tests and
+15 synthetic env/index assertions. Normal `verify -Full` passed with the real
+ignored `.env` and the entire staged index scanned. Two independent Tier 3
+reviews approved the change. The parent workspace now contains only `zima/`.

@@ -1,5 +1,12 @@
 # Migration 2026-10 — deferred cutover runbook
 
+Historical preparation plan, superseded by the user's simpler Git-based adoption
+and [completed workspace setup](partial-migration-2026-10-23.md). Do not execute
+the old transaction/journal or broker-copy procedure below. All six projects are
+now under Zima; the legacy Telegram service was retired in favor of the
+[outbound CLI](telegram/NOTIFICATIONS.md). Earlier pending/exclusion statements
+below describe their original dates, not current work.
+
 Status: full workspace cutover remains deferred. On 2026-10-23 the user authorized
 commit/push and [four-project partial adoption](partial-migration-2026-10-23.md),
 excluding active DriveTrace and shared old-root infrastructure. Applicable integrity

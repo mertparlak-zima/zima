@@ -1,5 +1,9 @@
 # A1 readiness and audit — 2026-10-20/21
 
+Historical audit. Current project locations, cleanup and Telegram behavior are
+recorded in [workspace setup](partial-migration-2026-10-23.md); its later user
+decisions supersede this audit's old pending/exclusion statements.
+
 Router: [AGENTS.md](../AGENTS.md). Execution contract:
 [migration runbook](migration-2026-10.md). Policy preparation:
 [patch pack](policy-patch-pack.md). This record supersedes optimistic completion claims

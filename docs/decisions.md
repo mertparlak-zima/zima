@@ -61,3 +61,17 @@ two root instruction Markdown files. All five catalogued projects now use
 `zima/projects/`; [the setup record](partial-migration-2026-10-23.md) documents the
 completed operations. Existing machine/broker infrastructure stays in place.
 The earlier DriveTrace exclusion applies only to its historical partial stage.
+
+## Local workspace settings and outbound Telegram - 2026-10-25
+
+The user requested moving the two local Claude files into ignored `zima/.claude/`
+and replacing the old JARVIS infrastructure with a single outbound command.
+Its local `CLAUDE.md` imports the canonical Zima AGENTS. This supersedes the
+historical no-local-Claude arrangement; harness-specific settings stay untracked.
+
+`scripts/telegram-notify.mjs` reads the bot token and chat ID only from ignored
+root `.env`, sends one message, then exits. No MCP, broker, listener, startup
+service, session routing, question or reply handling remains. Ask in the active
+agent conversation. The user's explicit env-storage instruction supersedes the
+earlier HKCU-only/broker-preservation rules for workspace Telegram; unrelated
+credentials and product Telegram features remain outside this change.
