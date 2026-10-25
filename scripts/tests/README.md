@@ -20,7 +20,9 @@ assertions; exit 0 = all pass.
   upstream states, external command failures, atomic lock race/ownership, real rg
   visibility (including linked-worktree `.git` files) and Full `.env`/entire-index/
   preamble checks, duplicate environment keys, unchanged tracked secrets/protected
-  paths, Unicode/space filenames and the allowed `projects/.gitkeep` exception.
+  paths, Unicode/space filenames and exact public-path exceptions: `projects/.gitkeep`,
+  `.vscode/settings.json` and `.vscode/README.md`. VS Code cases cover ignored siblings
+  and nested files, force-added neighbors, case variants and secrets in allowed blobs.
 - Real Git success tests use a local bare remote. A wrapper redirects only the fetch
   transport from the declared GitHub URL to the fixture; origin checks, fetch and
   ff-only/diverged merges run actual Git. Dirty fetch fingerprints working files,
@@ -32,24 +34,12 @@ assertions; exit 0 = all pass.
   files stay in `.agent-tmp/a1-hardening/tests-<guid>/`; only that canonical fixture
   is cleaned. `.agent-tmp/a1-hardening/test-summary.txt` retains the result.
 - No network, real member repo, zima Git index, runner, broker or user config writes.
-- The existing 151-check baseline uses an all-active synthetic manifest independently
+- The baseline uses an all-active synthetic manifest independently
   of production deferrals, preserving its original safety coverage.
 - `deferred-tests.ps1` exercises optional active defaults, invalid deferral metadata,
   pure declared-path validation, early no-probe state, explicit refusal before native
   calls, bulk selection, active-only portable generation, metadata-only cards and
   runner queries scoped to active containers. All paths/CLIs are synthetic fixtures.
-- `backup-tests.ps1` uses only `.agent-tmp/a1-backup/fixture-<guid>/` and loads the
-  backup script without executing its production entry point. Tiny binary files,
-  file/directory ADS, empty/absent categories, largest-image/signing sample restore,
-  restrictive ACLs, redacted matching receipts and protected inventory hashes are
-  exercised. Rejections cover low capacity, actual robocopy >=8, source changes,
-  backup/restore corruption, weak ACLs, running-emulator injection, existing targets,
-  a competing destination claim, arbitrary fixture roots, production fault injection,
-  junction escapes, sparse files and hard-linked metadata. Source fingerprints include
-  data, streams, timestamps, attributes and original DACL; failures preserve sources
-  (the explicit source-change fixture intentionally simulates a separate writer).
-  Fixtures are retained for review; `implementation-tests.json` is the redacted result.
-  Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/tests/backup-tests.ps1`.
 - Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/tests/run-tests.ps1`.
   A new safety rule needs a meaningful rejection regression in the same change.
 

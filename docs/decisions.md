@@ -2,6 +2,8 @@
 
 Chronological, dated, append-only. Decisions here are workspace-level and bind all repos
 via AGENTS.md; repo-specific decisions live in the repo's own docs.
+Historical entries describe their original scope; later decisions supersede retired
+gates and infrastructure. Current setup: [workspace.md](workspace.md).
 
 | Date | Decision | Context |
 |---|---|---|
@@ -24,8 +26,8 @@ evidence of shared bot identity or polling ownership. Preserve the workspace bro
 single-consumer invariant, discover its actual polling owner during A2, and keep the
 Daily Moods personal product bot separate. Environment-variable names establish no
 credential/identity relationship; never inspect their values to compare them.
-See [notification contract](telegram/NOTIFICATIONS.md) and
-[migration runbook](migration-2026-10.md). The historical row is retained unchanged.
+See [notification contract](telegram/NOTIFICATIONS.md) and the
+[current workspace record](workspace.md). The historical row is retained unchanged.
 
 ## Agent startup decision — 2026-10-21
 
@@ -39,17 +41,17 @@ G19 verifies selected-memory source/destination paths and content hashes while
 retaining originals, without a model/session spot-check. Earlier test attempts and
 their authorization remain historical observations, not proof of automatic loading.
 
-This waiver changes only agent startup/model callbacks. CI and permission enforcement,
-backup/restore, AVD/device and Telegram functional checks remain required. Commit/push
-hold and A2 NO-GO remain in force. Durable local resolution:
+This waiver changed only agent startup/model callbacks. Historical CI and permission
+enforcement, backup/restore, AVD/device and Telegram checks were separate gates.
+Commit/push hold and A2 NO-GO applied at that historical point. Durable local resolution:
 `.local-state/decisions/a1-harness-profile.md`; the pending profile question is closed.
 
 ## Publication and partial adoption — 2026-10-23
 
 The user released the commit/push hold for zima and authorized gradual transfer of
-current projects except active DriveTrace. [The scoped record](partial-migration-2026-10-23.md)
-lists the four eligible projects. DriveTrace, its worktrees/runner/evidence and
-shared old-root infrastructure remain outside this operation. The prior hold and
+current projects except active DriveTrace. Four projects were initially eligible;
+DriveTrace, its worktrees/runner/evidence and shared infrastructure remained outside
+that historical operation. The prior hold and
 full-workspace-only cleanup assumption are superseded for this authorized scope;
 data integrity and independent Git boundaries remain required.
 
@@ -58,8 +60,8 @@ data integrity and independent Git boundaries remain required.
 The user explicitly released the DriveTrace exclusion, requested publication of
 existing local commits, and authorized deleting its old directory and the last
 two root instruction Markdown files. All five catalogued projects now use
-`zima/projects/`; [the setup record](partial-migration-2026-10-23.md) documents the
-completed operations. Existing machine/broker infrastructure stays in place.
+`zima/projects/`; [the setup record](workspace.md) documents the completed operations.
+Existing machine infrastructure stays in place.
 The earlier DriveTrace exclusion applies only to its historical partial stage.
 
 ## Local workspace settings and outbound Telegram - 2026-10-25
@@ -75,3 +77,10 @@ service, session routing, question or reply handling remains. Ask in the active
 agent conversation. The user's explicit env-storage instruction supersedes the
 earlier HKCU-only/broker-preservation rules for workspace Telegram; unrelated
 credentials and product Telegram features remain outside this change.
+
+## Workspace adoption and migration-record cleanup — 2026-10-25
+
+All six catalogued projects are active under `projects/`. The user authorized removal
+of superseded migration/backup scripts, their dedicated tests, and migration planning
+documents. The concise current state and preserved recovery references are in
+[workspace.md](workspace.md); no local data or external recovery copy is removed.

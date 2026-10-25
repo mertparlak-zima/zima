@@ -12,7 +12,7 @@ history, CI and rules. zima provides surface-level oversight only.
    decisions in `.local-state/decisions/` before removing their pending files.
 1. Read this file fully.
 2. If target is unknown, read `repos/` cards or run `powershell -File scripts/zima.ps1
-   status -q` (A1 only: add `-Pending`; never use Pending during/after cutover).
+   status -q`.
 3. Read the target repo's card: `repos/<name>.md`. A manifest member marked `deferred`
    is metadata only: stop target operations, leave its source/runner untouched and
    respect its recorded reason. Bulk commands skip it; it is absent from the workspace.
@@ -28,7 +28,7 @@ history, CI and rules. zima provides surface-level oversight only.
    set: secrets handling, chain of command, one-way Telegram, git boundaries (never treat
    `projects/` as one repo; run git only at the verified repo root), evidence retention,
    review-tier minimums, issue standard (legacy issues are read-only; `gh` writes are
-   leader-only). Member adoption follows the scoped migration record; deferred members
+   leader-only). Member adoption follows the [workspace record](docs/workspace.md); deferred members
    keep their existing rules/location until a separate authorized transition.
 8. Scope all content searches under `projects/<repo>/`. Root-wide searches only for
    cross-repo questions (the `.ignore` whitelist makes source searchable; sensitive paths
@@ -103,5 +103,5 @@ single source of truth; `repos/<name>.md` cards are hand-written views.
 
 Repo-internal rules and docs; repo skill contents and their storage conventions; runner
 compose files and Dockerfiles; CI workflow internals; the
-Daily Moods product Telegram feature (separate from workspace JARVIS); third-party repo
+Daily Moods product Telegram feature (separate from workspace notifications); third-party repo
 contents; `artifacts/` evidence.

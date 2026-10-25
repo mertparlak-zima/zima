@@ -8,11 +8,7 @@ duplicating. Link-only for repo content (cards under `repos/` carry those links)
 - `issues.md` - task & issue standard (form marker, comment types, workflow, milestones).
 - `local-state.md` - irreplaceable local data inventory + backup/restore policy.
 - `decisions.md` - dated workspace decision log (append-only).
-- `migration-2026-10.md` - cutover runbook, rollback plan, journal schema, GO gate.
-- [a1-readiness.md](a1-readiness.md) - current audit evidence and remaining gates.
-- [a2-go-checklist.md](a2-go-checklist.md) - preparation status and old-root disposition.
-- [partial-migration-2026-10-23.md](partial-migration-2026-10-23.md) - authorized four-project adoption; DriveTrace excluded.
-- [policy-patch-pack.md](policy-patch-pack.md) - mandatory A2 rule-source coverage.
+- [workspace.md](workspace.md) - current six-project layout, setup and retained recovery evidence.
 - `telegram/NOTIFICATIONS.md` - one-way notification contract.
 - `templates/` - issue/comment/PR/folder-README templates.
 - Every doc cross-links; no content duplication; nearer (repo) rules win except the

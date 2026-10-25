@@ -91,7 +91,7 @@
       "name": "coin-tracker"
     },
     {
-      "state_note": "private/ (AVD avd-8, keystores, personal build scripts) + .planning/ acceptance evidence; TELEGRAM_BOT_TOKEN env name shared with workspace JARVIS (isolation note)",
+      "state_note": "private/ (AVD avd-8, keystores, personal build scripts) + .planning/ acceptance evidence; product Telegram configuration is separate from workspace notifications",
       "stack": "Android/Kotlin single full-screen WebView app with local cellular-call metadata collection (no audio); package dev.dailymoods.app",
       "local_state": "irreplaceable",
       "product": "Daily Moods",
@@ -102,8 +102,7 @@
       "quirks": [
         "product-name-mismatch-daily-moods",
         "runner-label-migration-pending",
-        "a2-preamble-non-destructive-patch-required",
-        "hardcoded-abs-paths-planning-private"
+        "private-local-config"
       ],
       "defer_reason": null,
       "default_branch": "main",

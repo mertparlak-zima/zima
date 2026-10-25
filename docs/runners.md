@@ -24,7 +24,7 @@ re-run gen. Machine paths live in `.env`.
   workflows that trigger on pull_request).
 - No Docker socket host-mounts, no privileged containers, no host path mounts beyond the
   runner work dir. This is target policy; current effective mounts, repo registration,
-  event guards and secret permissions require measured A2 evidence before claiming compliance.
+  event guards and secret permissions require measured production evidence before claiming compliance.
 - Registration tokens via stdin/ephemeral files only; never in compose files or logs.
 
 ## Shared engine rules (one Docker Desktop/WSL2 engine hosts all runner containers)
@@ -60,13 +60,13 @@ re-run gen. Machine paths live in `.env`.
 2. Switch workflows to the new label; observe one green run per workflow.
 3. Remove the old `daily-moods` label.
 
-## Pending migrations (tracked as zima-filed issues, executed in their repos)
+## Planned runner changes (tracked as zima-filed issues, executed in their repos)
 
-These are separate planned changes, not implied by partial source adoption. A
-manifest member marked DEFERRED (currently DriveTrace) is metadata only: do not
-inspect or operate its runner/jobs during the four-project transition.
+These are separate planned changes; workspace housekeeping does not authorize
+them. Any manifest member explicitly marked DEFERRED is metadata only: do not
+inspect or operate that member's runner/jobs until its authorized reactivation.
 
-- drive-trace: add `drive-trace` label to dt-docker-1 + all 5 `runs-on:` lines (label add
+- drive-trace: add `drive-trace` label to dt-docker-1 + matching `runs-on:` lines (label add
   sequence above). Until then dt workflows run on the shared `[self-hosted, docker]` pool.
 - call-tracker: label rename sequence above (coordinate with `scripts/ci-policy.mjs`
   contract test in one change).

@@ -30,8 +30,7 @@ metadata: {}
 ## After ANY manifest change
 
 1. `powershell -File scripts/zima.ps1 gen` — regenerate index/registry/workspace.
-2. `powershell -File scripts/zima.ps1 verify -Fast` (or `-Pending` before cutover) — must
-   PASS before committing; generation drift is checked in Pending too.
+2. `powershell -File scripts/zima.ps1 verify -Fast` — must PASS before committing.
 3. Same-change rule: if a repo's docs moved, update its card (`repos/<name>.md`) in the
    same change.
 
@@ -57,4 +56,4 @@ metadata: {}
   in the verify source; do not "clean" them).
 - `folder READMEs (D19)` → add a short README from `docs/templates/folder-README.md`.
 - `repos.md row count` → run `gen`.
-- Repo dir checks only apply after cutover (`-Pending` skips them during A1).
+- Repo directory checks apply to the active manifest members.

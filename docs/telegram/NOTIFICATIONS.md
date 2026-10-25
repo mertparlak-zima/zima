@@ -44,4 +44,4 @@ line instead of `Next:`. State that decisions must be made in the main agent
 conversation; Telegram replies are never read. Never send credentials, personal
 device data or raw logs. Product Telegram features remain separate.
 
-[Workspace router](../../AGENTS.md) - [Workspace setup](../partial-migration-2026-10-23.md).
+[Workspace router](../../AGENTS.md) - [Workspace setup](../workspace.md).

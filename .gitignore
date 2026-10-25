@@ -15,4 +15,6 @@ artifacts/
 # IDE / harness noise at zima root (repo-internal harness dirs are respected and untouched).
 .idea/
 .claude/
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/README.md

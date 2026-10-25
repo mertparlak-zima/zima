@@ -266,11 +266,11 @@ function Test-ZimaIndex {
     continue
    }
    $mode=$Matches[1];$oid=$Matches[2];$stage=$Matches[3];$name=$Matches[4]
-   # Exact skeleton exception only. All member content, machine configuration,
-   # durable local state, evidence and harness/IDE noise remain uncommittable.
-   $skeleton=$name -ceq 'projects/.gitkeep'
+   # Exact public paths only. Member content, machine configuration, durable
+   # local state, evidence and all other harness/IDE files stay uncommittable.
+   $publicPath=$name -cin @('projects/.gitkeep','.vscode/settings.json','.vscode/README.md')
    $protected=$name -match '^(?:projects(?:/|$)|\.env|(?:\.local-state|\.local-archives|\.agent-tmp|artifacts|\.jarvis-telegram-mcp|\.claude|\.idea|\.vscode)(?:/|$))'
-   if($protected -and !$skeleton){$errors.Add('index scan: prohibited local/member path (contents withheld)');continue}
+   if($protected -and !$publicPath){$errors.Add('index scan: prohibited local/member path (contents withheld)');continue}
    if($stage -ne '0'){$errors.Add('index scan: unresolved index stages (contents withheld)');continue}
    if($mode -notin @('100644','100755')){$errors.Add('index scan: non-regular entry (contents withheld)');continue}
    # Scan indexed objects rather than worktree files, including unchanged tracked
@@ -302,7 +302,7 @@ function Invoke-ZimaVerify {
  if($Mode -eq 'pending'){$Pending=$true;$Mode='fast'};$errors=@();$warnings=@();$checks=New-Object 'Collections.Generic.List[string]';$info=New-Object 'Collections.Generic.List[string]'
  if($Pending){try{Assert-ZimaPendingAllowed $ZimaRoot}catch{return @{Errors=@($_.Exception.Message);Warnings=@();Checks=$checks}}}
  try{$m=Read-ZimaManifest (Join-Path $ZimaRoot 'repos.json');$v=Invoke-ZimaManifestValidation $m $ZimaRoot;$errors+=@($v.Errors);if($errors.Count){return @{Errors=$errors;Warnings=$warnings;Checks=$checks}};$m=Resolve-ZimaDefaults $m;$checks.Add('manifest: schema + semantics + safe paths')}catch{return @{Errors=@($_.Exception.Message);Warnings=@();Checks=$checks}}
- $gitLines=@('projects/*','!projects/.gitkeep','projects/.shared/','.local-state/','.local-archives/','artifacts/','.agent-tmp/','.jarvis-telegram-mcp/','.env','.env.*','.idea/','.claude/','.vscode/')
+ $gitLines=@('projects/*','!projects/.gitkeep','projects/.shared/','.local-state/','.local-archives/','artifacts/','.agent-tmp/','.jarvis-telegram-mcp/','.env','.env.*','.idea/','.claude/','.vscode/*','!.vscode/settings.json','!.vscode/README.md')
  $ignoreLines=@('!projects/','!projects/**','projects/**/.git/','projects/**/.git','projects/**/node_modules/','projects/**/private/','projects/**/.env','projects/**/.env.*','projects/**/build/','projects/**/.gradle/','projects/**/dist/','projects/**/.agent-tmp/','projects/**/artifacts/','projects/**/.idea/','projects/**/.opencode/node_modules/','projects/**/.agents/node_modules/','projects/**/.planning/','projects/**/*.jks','projects/**/*.db','projects/str-fixer/input/','projects/str-fixer/**/*.srt')
  foreach($pair in @(@('.gitignore',$gitLines),@('.ignore',$ignoreLines),@('.gitattributes',@('*.md text eol=lf','*.json text eol=lf','*.ps1 text eol=crlf')))){$e=@(Test-RequiredLines (Join-Path $ZimaRoot $pair[0]) $pair[1]);if($e.Count){$errors+=$e}else{$checks.Add($pair[0]+': required exact lines')}}
  # Required lines alone cannot detect a later negation that exposes local data.

@@ -202,15 +202,48 @@ try{
  Write-Utf8NoBom (Join-Path $indexCase 'projects/.gitkeep') '';Write-Utf8NoBom (Join-Path $indexCase 'Türkçe spaced name.txt') 'safe text'
  $null=Invoke-FixtureGit $indexCase @('add','--','projects/.gitkeep','Türkçe spaced name.txt')
  $scan=Test-ZimaIndex $indexCase;Assert ($scan.Errors.Count -eq 0 -and $scan.Checked -eq 2) 'entire index allows exact projects/.gitkeep and Unicode/space filenames'
+ # Only the two public VS Code paths are shared; their blobs still pass every
+ # normal index check. Neighboring files/directories keep the private boundary.
+ $null=New-Item -ItemType Directory -Path (Join-Path $indexCase '.vscode')
+ Write-Utf8NoBom (Join-Path $indexCase '.vscode/settings.json') '{"git.autoRepositoryDetection":true,"git.repositoryScanMaxDepth":2}'
+ Write-Utf8NoBom (Join-Path $indexCase '.vscode/README.md') 'Public portable Git discovery settings.'
+ foreach($name in @('.vscode/settings.json','.vscode/README.md')){
+  $ignored=Invoke-ZimaNative git @('-C',$indexCase,'check-ignore','--no-index','--quiet','--',$name)
+  Assert ($ignored.Code -eq 1) ('exact public VS Code file is not ignored: '+$name)
+ }
+ $null=Invoke-FixtureGit $indexCase @('add','--','.vscode/settings.json','.vscode/README.md')
+ $scan=Test-ZimaIndex $indexCase;Assert ($scan.Errors.Count -eq 0 -and $scan.Checked -eq 4) 'entire index permits only the two exact public VS Code additions'
+ $vscodePrivate=@('.vscode/tasks.json','.vscode/sub/settings.json','.vscode/settings.json.backup','.vscode/README.md.backup')
+ foreach($name in $vscodePrivate){
+  $p=Get-ZimaSafePath $indexCase $name;$null=New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($p));Write-Utf8NoBom $p 'private synthetic editor file'
+  $ignored=Invoke-ZimaNative git @('-C',$indexCase,'check-ignore','--no-index','--quiet','--',$name)
+  Assert ($ignored.Code -eq 0) ('unshared VS Code neighbor remains ignored: '+$name)
+ }
+ Write-Utf8NoBom (Join-Path $indexCase '.vscode/settings.json') ('{"credential":"ghp_'+('V'*30)+'"}')
+ $null=Invoke-FixtureGit $indexCase @('add','--','.vscode/settings.json')
+ Write-Utf8NoBom (Join-Path $indexCase '.vscode/settings.json') '{"git.autoRepositoryDetection":true,"git.repositoryScanMaxDepth":2}'
+ $scan=Test-ZimaIndex $indexCase;Assert (@($scan.Errors|Where-Object{$_ -match 'secret-shaped'}).Count -eq 1) 'public VS Code settings still reject indexed secrets despite safe working copy'
+ $null=Invoke-FixtureGit $indexCase @('add','--','.vscode/settings.json')
+ # Cache entries exercise case-sensitive path policy even on case-insensitive NTFS.
+ $caseIndex=Join-Path $tree 'vscode-case-index';$null=New-Item -ItemType Directory -Path $caseIndex
+ $null=Invoke-FixtureGit $caseIndex @('init','--quiet')
+ Write-Utf8NoBom (Join-Path $caseIndex 'blob.txt') 'safe synthetic indexed content'
+ $object=Invoke-FixtureGit $caseIndex @('hash-object','-w','--','blob.txt');$oid=($object.Output -join '').Trim()
+ foreach($name in @('.vscode/Settings.json','.VSCODE/settings.json','.vscode/readme.md')){
+  $null=Invoke-FixtureGit $caseIndex @('update-index','--add','--cacheinfo',('100644,'+$oid+','+$name))
+  $scan=Test-ZimaIndex $caseIndex
+  Assert (@($scan.Errors|Where-Object{$_ -match 'prohibited local/member'}).Count -eq 1) ('case-variant VS Code exception is refused: '+$name)
+  $null=Invoke-FixtureGit $caseIndex @('update-index','--force-remove','--',$name)
+ }
  Write-Utf8NoBom (Join-Path $indexCase 'Türkçe secret file.txt') ('ghp_'+('B'*30));$null=Invoke-FixtureGit $indexCase @('add','--','Türkçe secret file.txt')
  Write-Utf8NoBom (Join-Path $indexCase 'Türkçe secret file.txt') 'safe worktree differs from index'
  $scan=Test-ZimaIndex $indexCase;Assert (@($scan.Errors|Where-Object{$_ -match 'secret-shaped'}).Count -eq 1) 'indexed Unicode/space secret blob is read despite safe working copy'
  $null=Invoke-FixtureGit $indexCase @('commit','--quiet','-m','synthetic indexed secret regression')
  $diff=Invoke-ZimaGitRaw @('-C',$indexCase,'diff','--cached','--name-only');Assert ($diff.Code -eq 0 -and $diff.Stdout.Length -eq 0) 'unchanged-index secret fixture has no staged diff'
  $scan=Test-ZimaIndex $indexCase;Assert (@($scan.Errors|Where-Object{$_ -match 'secret-shaped'}).Count -eq 1) 'unchanged committed secret remains rejected by entire-index scan'
- $protected=@('.local-state/a.txt','.local-archives/a.txt','.agent-tmp/a.txt','artifacts/a.txt','.jarvis-telegram-mcp/a.txt','.claude/a.txt','.idea/a.txt','.vscode/a.txt','.env.local','.env-shadow','projects/member/a.txt')
+ $protected=@('.local-state/a.txt','.local-archives/a.txt','.agent-tmp/a.txt','artifacts/a.txt','.jarvis-telegram-mcp/a.txt','.claude/a.txt','.idea/a.txt','.vscode/a.txt','.env.local','.env-shadow','projects/member/a.txt')+$vscodePrivate
  foreach($name in $protected){$p=Get-ZimaSafePath $indexCase $name;$null=New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($p));Write-Utf8NoBom $p 'synthetic protected fixture';$null=Invoke-FixtureGit $indexCase @('add','-f','--',$name)}
- $scan=Test-ZimaIndex $indexCase;Assert (@($scan.Errors|Where-Object{$_ -match 'prohibited local/member'}).Count -eq $protected.Count) 'force-added protected roots and env variants rejected; skeleton exception stays exact'
+ $scan=Test-ZimaIndex $indexCase;Assert (@($scan.Errors|Where-Object{$_ -match 'prohibited local/member'}).Count -eq $protected.Count) 'force-added protected roots, env variants and VS Code neighbors rejected; public exceptions stay exact'
  $null=Invoke-FixtureGit $indexCase @('commit','--quiet','-m','synthetic protected-root regression')
  $diff=Invoke-ZimaGitRaw @('-C',$indexCase,'diff','--cached','--name-only');$scan=Test-ZimaIndex $indexCase;Assert ($diff.Stdout.Length -eq 0 -and @($scan.Errors|Where-Object{$_ -match 'prohibited local/member'}).Count -eq $protected.Count) 'unchanged tracked protected files remain rejected'
 }catch{$script:Failures++;Write-Host ('UNEXPECTED: '+$_.Exception.Message);Write-Host $_.ScriptStackTrace}

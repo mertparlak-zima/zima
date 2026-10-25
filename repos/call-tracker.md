@@ -8,7 +8,7 @@
 | GitHub | https://github.com/mertparlak-zima/call-tracker |
 | Product | **Daily Moods** (product name ≠ repo/dir name; package `dev.dailymoods.app`) |
 | Stack | Android/Kotlin single full-screen WebView app + local cellular-call METADATA collection (no audio); TS/Vitest tooling; Gradle unit tests |
-| Default branch | `main`; preserve live dirty/staged/worktree state and snapshot it at source freeze; never reset it to simplify migration |
+| Default branch | `main`; preserve live dirty/staged/worktree state; workspace housekeeping never authorizes resetting it |
 | Local state | **irreplaceable** — `private/` (AVD `avd-8`, keystores, personal build scripts) + `.planning/` acceptance evidence |
 
 ## Entry documents
@@ -30,21 +30,17 @@ alias sequence in `docs/runners.md`), lifecycle **stop-when-idle**. Compose in-r
 
 ## Workspace quirks
 
-- `.planning/*.ps1` and `private/*.ps1` hardcode the OLD absolute root (~85 lines) and
-  `private/avd-8/*.ini` embed absolute paths — rewritten at cutover (A2 repair step);
-  AVD boot is a cutover smoke test.
-- Workspace policy patch and preamble are mandatory A2 gates, including on the dirty
-  branch. Prepare and check a non-destructive patch against the exact frozen content;
-  if it cannot apply safely, cutover is NO-GO.
-- The app's own Telegram product feature (personal bot) is SEPARATE from workspace
-  JARVIS; `TELEGRAM_BOT_TOKEN` env NAME is shared — isolation notes in
-  `docs/telegram/NOTIFICATIONS.md`.
+- Private scripts, AVD configuration and acceptance evidence remain protected by the
+  member's own rules. Workspace adoption is complete; it does not certify AVD startup
+  or replace the product's acceptance checks.
+- Product Telegram configuration is separate from workspace notifications.
+  Workspace sender rules: [NOTIFICATIONS.md](../docs/telegram/NOTIFICATIONS.md).
 
 ## Leader notes
 
 - Signing preflight (2026-10-21): [toolchain signing boundary](../projects/call-tracker/skills/daily-moods-verification/references/toolchain.md)
   confirms default SDK debug signing for QA and no configured production release key.
-  Production-key restore is N/A at this stage; retain QA signature continuity at cutover.
+  This is a dated observation; current signing and QA checks follow that source.
 
 - CI label rename must be coordinated: runner alias + ci-policy.mjs expectation + workflow
   `runs-on` in one change (the contract test fails otherwise).
