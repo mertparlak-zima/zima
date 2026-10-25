@@ -7,8 +7,8 @@ index).
 ## Contents / rules
 - `skills/` - the three zima skills. Claude Code does not auto-discover this folder; the
   AGENTS.md skill index points to the exact SKILL.md paths instead.
-- No harness-specific files (no CLAUDE.md, no .claude/) at the zima root - harness
-  bridges live in USER-level configs, never in this repo.
+- No tracked harness-specific files at the zima root - local Claude settings live in
+  ignored `.claude/`, never in the Zima index.
 
 ## Related
 - [../AGENTS.md](../AGENTS.md) skill index

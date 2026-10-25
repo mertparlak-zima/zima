@@ -50,7 +50,12 @@ try{
  $text=[Text.Encoding]::UTF8.GetString($bytes)
  Assert-Telegram ($bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191 -and !$text.Replace("`r`n",'').Contains("`n")) 'existing CLI preserves UTF-8 BOM and CRLF'
 }catch{$script:Failures++;Write-Host 'FAIL unexpected fixture error (details withheld)'}
-$summary="Assertions: $script:Count`nFailures: $script:Failures`nFixture: $rel`n"
-Write-Utf8NoBom (Get-ZimaSafePath $root '.agent-tmp/telegram-send-only-2026-10-25/env-test-summary.txt') $summary
+finally{
+ $summaryPath=Get-ZimaSafePath $root '.agent-tmp/telegram-send-only-2026-10-25/env-test-summary.txt'
+ $null=New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($summaryPath))
+ $summary="Assertions: $script:Count`nFailures: $script:Failures`nFixture: $rel`n"
+ Write-Utf8NoBom $summaryPath $summary
+ if(Test-Path -LiteralPath $tree){$checked=Get-ZimaSafePath $root $rel;Remove-Item -LiteralPath $checked -Recurse -Force}
+}
 Write-Host $summary
 if($script:Failures){exit 1};exit 0

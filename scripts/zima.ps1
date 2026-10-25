@@ -283,16 +283,22 @@ function Test-ZimaIndex {
  }catch{$errors.Add('index scan could not complete (details withheld)')}
  return @{Errors=@($errors.ToArray());Checked=$checked}
 }
+function Resolve-ZimaRgTool {
+ $cmd=Get-Command rg -ErrorAction SilentlyContinue
+ if($cmd){return $cmd.Source}
+ foreach($pattern in @((Join-Path $env:USERPROFILE '.codex\packages\standalone\releases\*\codex-path\rg.exe'),(Join-Path $env:USERPROFILE '.vscode\extensions\*\bin\windows-x86_64\rg.exe'),(Join-Path $env:LOCALAPPDATA 'Programs\Microsoft VS Code\resources\app\node_modules.asar.unpacked\@vscode\ripgrep\bin\rg.exe'),(Join-Path $env:ProgramFiles 'Microsoft VS Code\resources\app\node_modules.asar.unpacked\@vscode\ripgrep\bin\rg.exe'))){$found=@(Get-Item -Path $pattern -Force -ErrorAction SilentlyContinue|Sort-Object FullName -Descending);if($found.Count){return $found[0].FullName}}
+ return $null
+}
 function Test-ZimaRgProbe {
  param([string]$ZimaRoot)
- if(!(Get-Command rg -ErrorAction SilentlyContinue)){throw 'rg missing: search boundary probe cannot run'}
+ $rgTool=Resolve-ZimaRgTool;if(!$rgTool){throw 'rg missing: search boundary probe cannot run'}
  $rel='.agent-tmp/a1-hardening/rg-'+[guid]::NewGuid().ToString('N');$tree=Get-ZimaSafePath $ZimaRoot $rel
  try{
   $null=New-Item -ItemType Directory -Path $tree -Force;foreach($file in @('.gitignore','.ignore')){Copy-Item -LiteralPath (Get-ZimaSafePath $ZimaRoot $file) -Destination (Join-Path $tree $file)}
   $g=Invoke-ZimaNative git @('-C',$tree,'init','--quiet');if($g.Code -ne 0){throw 'probe git init failed'}
   $files=@('projects/probe/src/visible.txt','projects/probe/.git/hidden.txt','projects/worktree/.git','projects/probe/node_modules/hidden.txt','projects/probe/private/hidden.txt','projects/probe/build/hidden.txt','projects/probe/.env','projects/probe/.env.local','projects/probe/.gradle/hidden.txt','projects/probe/dist/hidden.txt','projects/probe/artifacts/hidden.txt','projects/probe/.planning/hidden.txt','projects/probe/signing.jks','projects/probe/data.db','projects/str-fixer/input/hidden.txt','projects/str-fixer/film.srt','.env','.agent-tmp/hidden.txt')
   foreach($f in $files){$p=Get-ZimaSafePath $tree $f;$null=New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($p));Write-Utf8NoBom $p 'zima-probe'}
-  Push-Location -LiteralPath $tree;try{$rg=Invoke-ZimaNative rg @('--files','--hidden','.')}finally{Pop-Location}
+  Push-Location -LiteralPath $tree;try{$rg=Invoke-ZimaNative $rgTool @('--files','--hidden','.')}finally{Pop-Location}
   if($rg.Code -ne 0){throw 'rg search failed'};$visible=@($rg.Output|ForEach-Object{($_ -replace '\\','/') -replace '^\./',''});if($visible -notcontains $files[0]){throw 'rg hides member source'}
   foreach($f in $files[1..($files.Count-1)]){if($visible -contains $f){throw "rg exposes excluded probe path: $f"}}
  }finally{if(Test-Path -LiteralPath $tree){$checked=Get-ZimaSafePath $ZimaRoot $rel;Remove-Item -LiteralPath $checked -Recurse -Force}}

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { copyFile, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import test from 'node:test';
 import { parseTelegramEnv, sendNotification, telegramEnvPath } from '../telegram-notify.mjs';
 
@@ -86,25 +86,29 @@ test('CLI consumes stdin and resolves its own env from another cwd with offline 
   const task = fileURLToPath(new URL('../../.agent-tmp/telegram-send-only-2026-10-25/', import.meta.url));
   await mkdir(task, { recursive: true });
   const root = await mkdtemp(join(task, 'cli-'));
-  const scripts = join(root, 'scripts');
-  const elsewhere = join(root, 'elsewhere');
-  await mkdir(scripts); await mkdir(elsewhere);
-  const script = join(scripts, 'telegram-notify.mjs');
-  await copyFile(fileURLToPath(new URL('../telegram-notify.mjs', import.meta.url)), script);
-  await writeFile(join(root, '.env'), envText);
-  await writeFile(join(elsewhere, '.env'), 'UNRELATED=decoy\n');
-  const message = 'Fixture result\nVerification: PASS';
-  const preload = join(root, 'offline-fetch.mjs');
-  await writeFile(preload, `import assert from 'node:assert/strict';
+  try {
+    const scripts = join(root, 'scripts');
+    const elsewhere = join(root, 'elsewhere');
+    await mkdir(scripts); await mkdir(elsewhere);
+    const script = join(scripts, 'telegram-notify.mjs');
+    await copyFile(fileURLToPath(new URL('../telegram-notify.mjs', import.meta.url)), script);
+    await writeFile(join(root, '.env'), envText);
+    await writeFile(join(elsewhere, '.env'), 'UNRELATED=decoy\n');
+    const message = 'Fixture result\nVerification: PASS';
+    const preload = join(root, 'offline-fetch.mjs');
+    await writeFile(preload, `import assert from 'node:assert/strict';
 globalThis.fetch = async (url, options) => {
   assert.equal(url, ${JSON.stringify(`https://api.telegram.org/bot${token}/sendMessage`)});
   assert.equal(options.method, 'POST');
   assert.deepEqual(JSON.parse(options.body), ${JSON.stringify({ chat_id: chatId, text: message, disable_notification: true })});
   return { ok: true, json: async () => ({ ok: true }) };
 };\n`);
-  const result = spawnSync(process.execPath, ['--import', pathToFileURL(preload).href, script, '--silent'], { cwd: elsewhere, input: message, encoding: 'utf8' });
-  assert.equal(result.status, 0);
-  assert.equal(result.stdout, 'Telegram notification sent.\n');
-  assert.equal(result.stderr, '');
-  assert.ok(!result.stdout.includes(token) && !result.stdout.includes(chatId));
+    const result = spawnSync(process.execPath, ['--import', pathToFileURL(preload).href, script, '--silent'], { cwd: elsewhere, input: message, encoding: 'utf8' });
+    assert.equal(result.status, 0);
+    assert.equal(result.stdout, 'Telegram notification sent.\n');
+    assert.equal(result.stderr, '');
+    assert.ok(!result.stdout.includes(token) && !result.stdout.includes(chatId));
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 });

@@ -19,7 +19,7 @@ try{
  Copy-Item -LiteralPath (Join-Path $root 'scripts/zima.ps1') -Destination (Join-Path $tree 'scripts/zima.ps1')
  Write-Utf8NoBom (Join-Path $tree 'scripts/README.md') 'Synthetic test code only.'
  $native=Invoke-ZimaNative git @('-C',$tree,'init','--quiet');if($native.Code -ne 0){throw 'Fixture Git init failed'}
- $base=Read-ZimaManifest (Join-Path $root 'repos.json');$m=Resolve-ZimaDefaults $base
+ $base=Copy-DeferredManifest (Read-ZimaManifest (Join-Path $root 'repos.json'));foreach($r in $base['repos']){$r.Remove('deferred');$r.Remove('defer_reason')};$base['repos'][0]['deferred']=$true;$base['repos'][0]['defer_reason']='Synthetic deferred fixture';Write-Utf8NoBom (Join-Path $tree ('repos/'+$base['repos'][0]['name']+'.md')) "# $($base['repos'][0]['name']) - DEFERRED fixture`n`n[Router](../AGENTS.md)`n";$m=Resolve-ZimaDefaults $base;$totalCount=$base['repos'].Count;$activeCount=$totalCount-1
  Assert-Deferred ((Invoke-ZimaManifestValidation $base $tree).Errors.Count -eq 0) 'actual deferred manifest validates without member sources'
  $plain=Copy-DeferredManifest $base;foreach($r in $plain['repos']){$r.Remove('deferred');$r.Remove('defer_reason')}
  $normal=Resolve-ZimaDefaults $plain
@@ -53,16 +53,16 @@ try{
  Save-DeferredManifest $base;Invoke-ZimaGen $m $tree
  $verify=Invoke-ZimaVerify -Mode full -ZimaRoot $tree
  Assert-Deferred (@($verify.Errors|Where-Object{$_ -match 'repo drive-trace'}).Count -eq 0 -and @($verify.Info|Where-Object{$_ -match '^DEFERRED drive-trace'}).Count -eq 1) 'normal Full explicitly excludes deferred source/docs/preamble checks'
- Assert-Deferred (@($verify.Errors|Where-Object{$_ -match 'missing, unsafe, non-root'}).Count -eq 4) 'normal Full still rejects all four missing active members'
+ Assert-Deferred (@($verify.Errors|Where-Object{$_ -match 'missing, unsafe, non-root'}).Count -eq $activeCount) 'normal Full still rejects all four missing active members'
  Assert-Deferred ($script:DeferredProbes -eq 0) 'manifest and Full verification never probe excluded source'
  Set-Item Function:Get-ZimaSafePath -Value $originalSafe
  $generated=Get-ZimaGenerated $m $tree;$workspace=$generated['zima.code-workspace']|ConvertFrom-Json
- Assert-Deferred ($workspace.folders.Count -eq 5 -and @($workspace.folders|Where-Object{$_.name -eq 'drive-trace'}).Count -eq 0) 'portable workspace contains root plus four active entries only'
+ Assert-Deferred ($workspace.folders.Count -eq ($activeCount+1) -and @($workspace.folders|Where-Object{$_.name -eq 'drive-trace'}).Count -eq 0) 'portable workspace contains root plus four active entries only'
  Assert-Deferred ($generated['repos/repos.md'].Contains('DEFERRED: ') -and $generated['docs/runners.md'].Contains('| drive-trace | DEFERRED |')) 'generated catalog and runner registry label excluded metadata'
  $allActiveGenerated=Get-ZimaGenerated $normal $tree;$allActiveWorkspace=$allActiveGenerated['zima.code-workspace']|ConvertFrom-Json
- Assert-Deferred ($allActiveWorkspace.folders.Count -eq 6) 'all-active generation retains root plus all five members'
+ Assert-Deferred ($allActiveWorkspace.folders.Count -eq ($totalCount+1)) 'all-active generation retains root plus all five members'
  $targets=Get-ZimaTargets $m @() -All
- Assert-Deferred ($targets.Count -eq 4 -and @($targets|Where-Object{$_['name'] -eq 'drive-trace'}).Count -eq 0) 'bulk targets exclude deferred member'
+ Assert-Deferred ($targets.Count -eq $activeCount -and @($targets|Where-Object{$_['name'] -eq 'drive-trace'}).Count -eq 0) 'bulk targets exclude deferred member'
  Assert-Deferred (Test-DeferredThrows {Get-ZimaTargets $m @('drive-trace')}) 'explicit target selector refuses deferred member'
 
  # Relocated files have new stat/inode data. A clean status read must not refresh
@@ -122,7 +122,7 @@ public static class DeferredDockerShim {
  }
  $result=Invoke-DeferredCli @('issues','--json');$rows=($result.Output -join "`n")|ConvertFrom-Json
  $log=Get-Content -LiteralPath $ghLog -Raw
- Assert-Deferred ($result.Code -eq 0 -and @($rows).Count -eq 5 -and $log -notmatch 'drive-trace') 'bulk issues reaches four active repos plus zima only'
+ Assert-Deferred ($result.Code -eq 0 -and @($rows).Count -eq ($activeCount+1) -and $log -notmatch 'drive-trace') 'bulk issues reaches four active repos plus zima only'
  $result=Invoke-DeferredCli @('runners');if($result.Code -ne 0){throw ('Synthetic runners CLI failed: '+(($result.Output+$result.Diagnostics) -join ' '))};$log=Get-Content -LiteralPath $dockerLog -Raw
  Assert-Deferred ($result.Code -eq 0 -and $log -notmatch 'dt-docker-1' -and @($log -split "`r?`n"|Where-Object{$_}).Count -eq 2) 'runner queries only active containers, never excluded runner'
  Assert-Deferred ($log.Contains('--filter name=^/ct-docker-1$') -and $log.Contains('--filter name=^/dm-docker-1$')) 'runner Docker filters are exact active container names'
@@ -139,12 +139,12 @@ public static class DeferredDockerShim {
  foreach($operation in @('clone','sync','update')){
   if(Test-Path -LiteralPath $gitLog){Remove-Item -LiteralPath $gitLog}
   $result=Invoke-DeferredCli @($operation,'-All');$nativeCalls=@(Get-Content -LiteralPath $gitLog)
-  Assert-Deferred ($result.Code -eq 0 -and $nativeCalls.Count -eq 5 -and @($nativeCalls|Where-Object{$_ -notmatch '^check-ref-format --branch main$'}).Count -eq 0) ('all-deferred '+$operation+' performs no source/transport mutation calls')
+  Assert-Deferred ($result.Code -eq 0 -and $nativeCalls.Count -eq $totalCount -and @($nativeCalls|Where-Object{$_ -notmatch '^check-ref-format --branch main$'}).Count -eq 0) ('all-deferred '+$operation+' performs no source/transport mutation calls')
  }
 }catch{$script:Failures++;Write-Host ('UNEXPECTED: '+$_.Exception.Message);Write-Host $_.ScriptStackTrace}
 finally{
  $env:PATH=$oldPath;Set-Item Function:Get-ZimaSafePath -Value $originalSafe
- $evidence=Join-Path $root '.agent-tmp/partial-cutover-2026-10-23/deferred-tests.json'
+ $evidence=Get-ZimaSafePath $root '.agent-tmp/partial-cutover-2026-10-23/deferred-tests.json';$null=New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($evidence))
  $receipt=[ordered]@{timestamp_utc=[DateTime]::UtcNow.ToString('o');assertions=$script:Count;failures=$script:Failures;synthetic_only=$true;source_members_accessed=$false;script_sha256=(Get-FileHash -LiteralPath (Join-Path $root 'scripts/zima.ps1') -Algorithm SHA256).Hash.ToLowerInvariant();tests_sha256=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash.ToLowerInvariant()}
  Write-Utf8NoBom $evidence (($receipt|ConvertTo-Json -Depth 5)+"`n")
  if(Test-Path -LiteralPath $tree){$checked=Get-ZimaSafePath $root $rel;Remove-Item -LiteralPath $checked -Recurse -Force}
