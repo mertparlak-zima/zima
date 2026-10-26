@@ -251,20 +251,19 @@
       "owner_type": "ours",
       "path": "projects/heliboard-archive",
       "runner": {
-        "label_status": "pending-migration",
+        "label_status": "compliant",
         "compose": "infra/runner/compose.yml",
         "container": "heliboard-archive-docker-1",
         "lifecycle": "stop-when-idle",
         "label": "heliboard-archive"
       },
       "name": "heliboard-archive",
-      "state_note": "Source clone; archive application code and signing material not yet introduced. Inherited GitHub-hosted CI awaits P03 replacement with local Docker runner heliboard-archive-docker-1.",
+      "state_note": "P03 merged (PR #29): fork identity helium314.keyboard.archive and local-only ci.yml on heliboard-archive-docker-1 with green run evidence; archive application code not yet implemented (P04+).",
       "ci_workflows": [
         "ci.yml"
       ],
       "quirks": [
         "upstream-heliboard-fork",
-        "inherited-github-hosted-ci-awaiting-audit",
         "archive-not-implemented"
       ],
       "stack": "Android Kotlin Java HeliBoard fork with offline personal text archive",

@@ -94,5 +94,5 @@ inspect or operate that member's runner/jobs until its authorized reactivation.
 | lg-tv-channel-sort | active | lg-tv-channel-sort-docker-1 | lg-tv-channel-sort | lg-tv-channel-sort | stop-when-idle | infra/runner/compose.yml |
 | str-fixer | active | str-fixer-docker-1 | str-fixer | str-fixer | stop-when-idle | infra/runner/compose.yml |
 | tahmin-ligi | active | tahmin-ligi-docker-1 | tahmin-ligi | tahmin-ligi | stop-when-idle | infra/runner/compose.yml |
-| heliboard-archive | active | heliboard-archive-docker-1 | (shared pool - no repo label yet) | heliboard-archive | stop-when-idle | infra/runner/compose.yml |
+| heliboard-archive | active | heliboard-archive-docker-1 | heliboard-archive | heliboard-archive | stop-when-idle | infra/runner/compose.yml |
 <!-- END GENERATED RUNNER REGISTRY -->
