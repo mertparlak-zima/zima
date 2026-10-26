@@ -19,6 +19,7 @@
 - [Plan review](../projects/coin-tracker/docs/plan-review-2026-10-26.md) — two independent review lenses, corrections and evidence
 - [GitHub roadmap resources](../projects/coin-tracker/docs/github/README.md) — generated milestone/issue map
 - [Repo skills](../projects/coin-tracker/.agents/skills/README.md) — development, engine and data/access rules; every functional change updates affected skills and docs
+- [Workspace Cloudflare MCP runbook](../docs/cloudflare.md) — shared connection/tool checks; product setup follows this repo's plan
 - [Reset record](../projects/coin-tracker/docs/reset-2026-10-26.md) — 2026-10-26 cancellation audit (issues/milestones closed, delete/keep inventory, verification)
 - CLAUDE.md in-repo is a pointer stub to AGENTS.md (single-source pattern)
 

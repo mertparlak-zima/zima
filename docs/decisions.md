@@ -85,3 +85,13 @@ All six catalogued projects are active under `projects/`. The user authorized re
 of superseded migration/backup scripts, their dedicated tests, and migration planning
 documents. The concise current state and preserved recovery references are in
 [workspace.md](workspace.md); no local data or external recovery copy is removed.
+
+## Cloudflare MCP across agent sessions — 2026-10-26
+
+The owner requested the official Cloudflare API MCP before coin-tracker implementation,
+completed OAuth, and asked for reusable workspace instructions. The native Codex user
+profile holds the connection/grant; zima tracks the public endpoint and
+[operational runbook](cloudflare.md), never credentials. New sessions must verify
+their actual tool inventory and account/resource access. Configuration and OAuth
+success alone do not certify a running session's tools or product permissions.
+Repo-local product rules and local Docker CI remain authoritative.
