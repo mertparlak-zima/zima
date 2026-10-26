@@ -53,14 +53,14 @@
     },
     {
       "state_note": null,
-      "stack": "TypeScript Gea Vite empty base website (product cancelled 2026-10-26, re-planning); Vitest smoke; Node 24; self-hosted CI",
+      "stack": "TypeScript Gea Vite scaffold; Binance Futures paper-bot plan (Workers/D1 planned); Vitest; Node 24; self-hosted CI",
       "local_state": "clean",
       "product": "Coin Tracker",
       "github": "https://github.com/mertparlak-zima/coin-tracker.git",
-      "skills_locations": [],
-      "quirks": [
-        "github-roadmap-json-stale-until-replan"
+      "skills_locations": [
+        ".agents/skills"
       ],
+      "quirks": [],
       "defer_reason": null,
       "default_branch": "main",
       "path": "projects/coin-tracker",
@@ -79,9 +79,12 @@
         "agents": "AGENTS.md",
         "readme": "README.md",
         "key": [
+          "docs/product-plan.md",
+          "docs/plan-review-2026-10-26.md",
+          ".agents/skills/README.md",
           "docs/reset-2026-10-26.md"
         ],
-        "skills": null
+        "skills": ".agents/skills/README.md"
       },
       "deferred": false,
       "name": "coin-tracker"
