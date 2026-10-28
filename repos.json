@@ -258,7 +258,7 @@
         "label": "heliboard-archive"
       },
       "name": "heliboard-archive",
-      "state_note": "P04-P18 merged (PRs #30-#45): consent, encrypted persistence, both capture surfaces, budgets, backup exclusion, archive list/detail UI, bounded encrypted search, erasure barriers, variant isolation audit + a11y, versioned JSON export; milestones all closed; P19-P25 backlog.",
+      "state_note": "P04-P19 merged (PRs #30-#46) + minSdk 31 (a4fe975f): consent, encrypted persistence, both capture surfaces, budgets, backup exclusion, archive list/detail UI, bounded encrypted search, erasure barriers, variant audit + a11y, JSON export + import/clean-install restore; personal-use scope decision applied; milestones all closed; P20-P22 to first release, P23-P25 cloud open (Supabase leaning).",
       "ci_workflows": [
         "ci.yml"
       ],
