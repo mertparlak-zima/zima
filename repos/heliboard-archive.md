@@ -31,5 +31,5 @@ identity `helium314.keyboard.archive` (ADR-002). Follow [runner policy](../docs/
 - Personal fork of [HeliBorg/HeliBoard](https://github.com/HeliBorg/HeliBoard).
 - The first archive release must include both visible IME sessions and the owned note editor.
 - Bootstrap source main is `c768bf5ebd6059bcbf56b4c5f8e94224890e1bf4` (4.3-beta1); stable v4.2 is a candidate to validate in P01/P02. Do not reset the fork history implicitly.
-- GitHub issues are managed under this fork only. At most two open milestones (M0/M1); later phases remain backlog metadata. Implementation started 2026-10-25 by explicit user instruction; P01 (issue #1, PR #27), P02 (issue #2, PR #28) and P03 (issue #3, PR #29) closed with evidence.
+- GitHub issues are managed under this fork only. At most two open milestones (M0/M1); later phases remain backlog metadata. Implementation started 2026-10-25 by explicit user instruction; P01-P14 (issues #1-#14) closed with evidence — latest: P14 archive list/detail screens (PR #41, ADR-010; ARCHIVE key long-press opens the list, metadata-first with dual-gate opt-in previews). Next: P15 (#15) metadata filters and bounded encrypted-content search.
 - Upstream README, contribution policy, AI policy and licenses are preserved. AI-generated upstream issues/PRs/comments are not part of the own-fork workflow.

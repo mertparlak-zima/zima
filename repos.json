@@ -258,13 +258,13 @@
         "label": "heliboard-archive"
       },
       "name": "heliboard-archive",
-      "state_note": "P03 merged (PR #29): fork identity helium314.keyboard.archive and local-only ci.yml on heliboard-archive-docker-1 with green run evidence; archive application code not yet implemented (P04+).",
+      "state_note": "P04-P14 merged (PRs #30-#41): consent, encrypted persistence, both capture surfaces, budgets, backup exclusion and archive list/detail UI on local CI; P15-P25 backlog.",
       "ci_workflows": [
         "ci.yml"
       ],
       "quirks": [
         "upstream-heliboard-fork",
-        "archive-not-implemented"
+        "archive-implementation-in-progress"
       ],
       "stack": "Android Kotlin Java HeliBoard fork with offline personal text archive",
       "docs": {
