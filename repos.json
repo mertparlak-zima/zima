@@ -258,7 +258,7 @@
         "label": "heliboard-archive"
       },
       "name": "heliboard-archive",
-      "state_note": "P04-P16 merged (PRs #30-#43): consent, encrypted persistence, both capture surfaces, budgets, backup exclusion, archive list/detail UI, bounded encrypted search and erasure barriers; milestones all closed; P17-P25 backlog.",
+      "state_note": "P04-P17 merged (PRs #30-#44): consent, encrypted persistence, both capture surfaces, budgets, backup exclusion, archive list/detail UI, bounded encrypted search, erasure barriers, variant isolation audit + a11y; milestones all closed; P18-P25 backlog.",
       "ci_workflows": [
         "ci.yml"
       ],
