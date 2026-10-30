@@ -258,7 +258,7 @@
         "label": "heliboard-archive"
       },
       "name": "heliboard-archive",
-      "state_note": "P04-P19 merged (PRs #30-#46) + minSdk 31 (a4fe975f): consent, encrypted persistence, both capture surfaces, budgets, backup exclusion, archive list/detail UI, bounded encrypted search, erasure barriers, variant audit + a11y, JSON export + import/clean-install restore; personal-use scope decision applied; milestones all closed; P20-P22 to first release, P23-P25 cloud open (Supabase leaning).",
+      "state_note": "P04-P20 merged (PRs #30-#47): full local feature set through the device E2E matrix (ADR-016); personal-use scope (minSdk 31, no store); P21 performance + P22 signed APK remain to first release; P23-P25 cloud open (Supabase leaning).",
       "ci_workflows": [
         "ci.yml"
       ],
