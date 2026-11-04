@@ -23,6 +23,11 @@ re-run gen. Machine paths live in `.env`.
   registration is the isolation mechanism here.
 - One runner serves one job at a time; queued jobs 24h timeout; a runner older than ~30
   days without auto-update silently stops receiving jobs - keep auto-update ON.
+- Validation CI workflows trigger on `pull_request` (targeting the default branch, with the
+  fork-PR guard) plus `workflow_dispatch` for on-demand manual runs. Do NOT add
+  `push: branches: [<default-branch>]` to validation workflows: `pull_request` already
+  validates the merge ref before merge, and rerunning the full suite after merge wastes
+  single-concurrency local runner capacity (owner decision 2026-11-04).
 
 ## Least-privilege rules
 
@@ -82,6 +87,9 @@ inspect or operate that member's runner/jobs until its authorized reactivation.
   contract test in one change).
 - Normalize label casing to lowercase in policy scripts (ci-policy.mjs / ci-policy-core.cjs).
 - coin-tracker ci.yml concurrency + PR-branch filter: DONE 2026-10-26 (with the repo reset).
+- Remove redundant post-merge `push` triggers from validation CI workflows (keep
+  `pull_request` + `workflow_dispatch`): `coin-tracker` DONE 2026-11-04; remaining active
+  repos queued for incremental rollout.
 
 ## Registry (GENERATED)
 

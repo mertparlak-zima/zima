@@ -32,6 +32,8 @@ never quit Docker Desktop because of another repo's task). Compose in-repo:
 `infra/runner/compose.yml`; start via `scripts/start-ci-runner.ps1` (verifies labels).
 2026-10-26: concurrency group + `pull_request: branches: [main]` added (the previously
 zima-filed ci.yml fix is DONE); fork guard and exact label set unchanged.
+2026-11-04: validation triggers updated to `pull_request: branches: [main]` +
+`workflow_dispatch` (redundant post-merge `push` trigger removed per workspace policy).
 
 ## Workspace quirks
 

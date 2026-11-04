@@ -22,7 +22,7 @@ metadata: {}
 5. Mandatory local self-hosted Docker runner & CI (every workspace repo):
    - Runner label = repo slug, container `<slug>-docker-N`, `infra/runner/compose.yml` + `scripts/start-ci-runner.ps1` (stdin token registration; never persist tokens).
    - Lifecycle = user decision (`stop-when-idle` default; record in `docs/decisions.md` and `docs/runners.md`).
-   - Create `.github/workflows/ci.yml` with `runs-on: [self-hosted, linux, x64, docker, <slug>]` and the fork-PR guard (`if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository`).
+   - Create `.github/workflows/ci.yml` triggered on `pull_request` (default branch) + `workflow_dispatch` only (no redundant `push` trigger on the default branch), with `runs-on: [self-hosted, linux, x64, docker, <slug>]` and the fork-PR guard (`if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository`).
    - If onboarding a fork with upstream `.github/workflows/*.y*ml` (e.g., `ubuntu-latest`), migrate or replace them immediately so NO workflow uses GitHub-hosted runners. Follow `docs/runners.md` and observe one green run.
 6. Issue scaffolding (optional, user decision): minimal label taxonomy + roadmap-JSON
    bootstrap — pattern reference: coin-tracker `scripts/github-roadmap.json` +
@@ -34,6 +34,7 @@ metadata: {}
 - Never commit anything under `projects/` into zima.
 - Never leave a repo without CI (`runner: null`, `ci_workflows: []`, or `no-ci-by-design`) — every workspace repo must have a local self-hosted Docker runner and CI workflow.
 - Never use GitHub-hosted runners (`ubuntu-latest`, `windows-*`, `macos-*`, etc.) or leave inherited upstream GitHub-hosted workflows active.
+- Never add `push: branches: [<default-branch>]` to validation CI workflows — `pull_request` + `workflow_dispatch` is the workspace standard.
 - Never modify an EXISTING repo's issues/milestones/labels to "conform" — the standard
   applies to NEW issues only; legacy issues are read-only.
 - Never clone third-party repos into `projects/` — third_party entries carry an EXTERNAL

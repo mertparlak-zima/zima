@@ -74,6 +74,9 @@ repo slug; labels are ROUTING, not isolation — isolation comes from per-repo r
 on the shared local Docker engine. GitHub-hosted runners (`ubuntu-latest`, `windows-*`,
 `macos-*`, etc.) and `no-ci` exemptions are FORBIDDEN; inherited upstream workflows in forks
 must be migrated to the repo's local self-hosted Docker runner during onboarding.
+Validation CI workflows trigger on `pull_request` (default branch, with fork guard) +
+`workflow_dispatch` only — do NOT run duplicate post-merge `push` validation on the default
+branch (`coin-tracker` migrated; remaining repos migrate incrementally).
 NEVER stop/restart another repo's runner and NEVER quit/restart Docker Desktop without
 `zima.ps1 locks list` clean + user approval. Policy and sequences: `docs/runners.md`.
 
