@@ -88,8 +88,14 @@ inspect or operate that member's runner/jobs until its authorized reactivation.
 - Normalize label casing to lowercase in policy scripts (ci-policy.mjs / ci-policy-core.cjs).
 - coin-tracker ci.yml concurrency + PR-branch filter: DONE 2026-10-26 (with the repo reset).
 - Remove redundant post-merge `push` triggers from validation CI workflows (keep
-  `pull_request` + `workflow_dispatch`): `coin-tracker` DONE 2026-11-04; remaining active
-  repos queued for incremental rollout.
+  `pull_request` + `workflow_dispatch`): `coin-tracker` DONE 2026-11-04;
+  `call-tracker`, `lg-tv-channel-sort`, `str-fixer`, `tahmin-ligi`, `heliboard-archive`
+  DONE 2026-11-05 (T3-reviewed sweep). `drive-trace` is a deliberate EXEMPTION: its
+  layered `ci-policy` model already suppresses duplicate post-merge full runs (verified
+  same-tree merge push) and keeps fail-closed full verify for direct/unknown main pushes,
+  node:test-protected — removing its `push` trigger would break that contract.
+  Discipline note (T3 finding): direct pushes to main now get NO CI anywhere — use
+  PRs or a manual `workflow_dispatch` run after unavoidable direct pushes.
 
 ## Registry (GENERATED)
 

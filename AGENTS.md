@@ -76,7 +76,9 @@ on the shared local Docker engine. GitHub-hosted runners (`ubuntu-latest`, `wind
 must be migrated to the repo's local self-hosted Docker runner during onboarding.
 Validation CI workflows trigger on `pull_request` (default branch, with fork guard) +
 `workflow_dispatch` only — do NOT run duplicate post-merge `push` validation on the default
-branch (`coin-tracker` migrated; remaining repos migrate incrementally).
+branch (all active validation repos migrated 2026-11-05; `drive-trace` exempt by its
+test-protected layered dedupe model). Direct pushes to a default branch get NO CI — use
+PRs or a manual `workflow_dispatch` run.
 NEVER stop/restart another repo's runner and NEVER quit/restart Docker Desktop without
 `zima.ps1 locks list` clean + user approval. Policy and sequences: `docs/runners.md`.
 
