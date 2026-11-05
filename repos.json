@@ -258,7 +258,7 @@
         "label": "heliboard-archive"
       },
       "name": "heliboard-archive",
-      "state_note": "P04-P21 merged (PRs #30-#48): full local feature set through the measured performance comparison (ADR-017); personal-use scope (minSdk 31, no store); P22 signed personal APK remains to first release; P23-P25 cloud open (Supabase leaning).",
+      "state_note": "P04-P22 merged (PRs #30-#49): COMPLETE local personal release - v4301 (4.3-archive.1) debug-keystore-signed and installed on the deployment phone (PR #49, ADR-018); P23-P25 cloud open (Supabase leaning), on-demand only.",
       "ci_workflows": [
         "ci.yml"
       ],
