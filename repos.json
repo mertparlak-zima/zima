@@ -258,7 +258,7 @@
         "label": "heliboard-archive"
       },
       "name": "heliboard-archive",
-      "state_note": "P04-P20 merged (PRs #30-#47): full local feature set through the device E2E matrix (ADR-016); personal-use scope (minSdk 31, no store); P21 performance + P22 signed APK remain to first release; P23-P25 cloud open (Supabase leaning).",
+      "state_note": "P04-P21 merged (PRs #30-#48): full local feature set through the measured performance comparison (ADR-017); personal-use scope (minSdk 31, no store); P22 signed personal APK remains to first release; P23-P25 cloud open (Supabase leaning).",
       "ci_workflows": [
         "ci.yml"
       ],
