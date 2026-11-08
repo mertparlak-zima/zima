@@ -53,7 +53,9 @@ preamble from `.agents/skills/zima-leader/references/preamble.md`.
 
 Docs referenced by the router instead of skills: Telegram → `docs/telegram/NOTIFICATIONS.md`
 (before sending ANY notification); runners → `docs/runners.md` (before any runner action);
-issues → `docs/issues.md` (before creating/commenting/closing any issue); physical test
+issues → `docs/issues.md` (before creating/commenting/closing any issue); Codex context,
+quota and handoff → [docs/codex-context-and-limits.md](docs/codex-context-and-limits.md)
+(when tracking these metrics or preparing a limit-driven handoff); physical test
 phone → `docs/devices.md` (before any device/adb operation); Cloudflare/MCP →
 [docs/cloudflare.md](docs/cloudflare.md) (before Cloudflare account, Worker/D1 or deploy operations;
 verify actual session tools/account access, not just saved configuration).

@@ -35,4 +35,5 @@ ignored root `.env`, sends one message and exits. No background service is neede
 Docs: [docs/runners.md](docs/runners.md) · [docs/issues.md](docs/issues.md) ·
 [docs/telegram/NOTIFICATIONS.md](docs/telegram/NOTIFICATIONS.md) ·
 [docs/decisions.md](docs/decisions.md) · [docs/local-state.md](docs/local-state.md) ·
-[Cloudflare MCP runbook](docs/cloudflare.md)
+[Cloudflare MCP runbook](docs/cloudflare.md) ·
+[Codex context and limits](docs/codex-context-and-limits.md)
