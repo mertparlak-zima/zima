@@ -70,6 +70,11 @@ Usage and message format: `docs/telegram/NOTIFICATIONS.md`.
 
 ## CI runners — summary
 
+All member Docker CI runners use measured, bounded RAM-backed storage for disposable
+test/runtime temporary data. Persistent workspaces, evidence and physical-durability
+fixtures remain on disk. Before adoption or runner changes, follow the compatibility,
+capacity and per-repo rollout gates in [runner policy](docs/runners.md#ram-backed-runtime-temporary-storage).
+
 Every repository in the workspace (existing and newly onboarded) MUST have CI workflows
 configured to run on its own local self-hosted Docker runner (`<repo>-docker-N`, label =
 repo slug; labels are ROUTING, not isolation — isolation comes from per-repo registration)
