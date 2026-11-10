@@ -38,6 +38,35 @@ re-run gen. Machine paths live in `.env`.
   event guards and secret permissions require measured production evidence before claiming compliance.
 - Registration tokens via stdin/ephemeral files only; never in compose files or logs.
 
+## RAM-backed runtime temporary storage
+
+All active and newly onboarded member Docker CI runners use a bounded tmpfs for
+eligible disposable test/runtime temporary data. Keep the OS/runtime temp mount
+outside checkout-cleaned directories (normally `/tmp`, mode1777); point TMPDIR at
+that mount. Agent-authored temp files and acceptance evidence still follow the
+workspace's repo-local `.agent-tmp/` rules.
+
+Choose an explicit per-repo size from measured workload and available shared-engine
+memory; the reference's2GiB is not a universal allocation. Before first adoption,
+compare identical selected tests on disk/RAM/disk, then run the complete unchanged
+suite and actual repo PR CI. Preserve assertions, timeouts, in-test concurrency,
+isolation and SQL semantics. Record observed memory/capacity limits honestly.
+
+Keep workspaces, tool caches, retained evidence/logs, credentials, production data
+and fixtures requiring physical-disk or container-restart durability on persistent
+storage. A RAM-backed local SQLite file remains a real database, but is not proof
+of survival across host/container loss. Never move such durability requirements
+to RAM merely to improve test speed.
+
+Existing members adopt this standard in their own runner maintenance change.
+Only the assigned repo's idle runner may be recreated, after checking queued jobs
+and preserving its workspace volume; re-register through the supported secret-safe
+script when needed. This rule authorizes no bulk restart, other-repo runner action
+or shared-engine restart. Existing lifecycle/lock rules still apply.
+
+Reference: [coin-tracker runner](../projects/coin-tracker/infra/runner/README.md),
+with measured temporary-storage comparison and full-suite evidence.
+
 ## Shared engine rules (one Docker Desktop/WSL2 engine hosts all runner containers)
 
 - NEVER stop/restart another repo's runner container.

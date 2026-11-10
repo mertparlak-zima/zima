@@ -12,5 +12,7 @@ if [ "$PHASE" = "A1" ]; then
 else
     MODE=""
 fi
+# Git exports GIT_DIR / GIT_INDEX_FILE during hooks, which breaks git -C <repo> queries in verify
+unset GIT_DIR GIT_INDEX_FILE GIT_WORK_TREE
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/zima.ps1 verify -Fast $MODE
 exit $?
