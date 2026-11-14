@@ -69,6 +69,10 @@ $null | opencode run -m zai-coding-plan/glm-5.3 --agent build --auto --archived 
   delegated in a controlled step that names the exact command — never by default.
 - Review tiers (zima-leader §4) are unchanged: Tier-3 review and independent acceptance
   run on `zai-coding-plan/glm-5.3`, never on `flash`.
+- **Leader final-review gate (mandatory)**: `opencode` workers and reviewers are a **second
+  pair of eyes**, NEVER the final authority. Before approving, pushing, or merging any
+  critical/important change (schemas, migrations, architecture, security, runtime, CI),
+  the LEADER must personally inspect the diff and verify correctness directly.
 - Reports still follow context discipline: ≤~30 lines, evidence by path, no pasted logs.
 
 ## Related

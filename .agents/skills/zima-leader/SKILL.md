@@ -59,6 +59,10 @@ change affecting a risk class is T3, even when it changes no executable code.
   (finding/severity/file:line/suggestion).
 - Reviewers distinguish `evidence_review` (what they checked) from `test_execution` (run
   by worker/leader, not by the shell-less reviewer).
+- **Leader final-review gate**: subagents and `opencode` reviewers are a **second pair of
+  eyes**, never a substitute for the leader's own judgment. The leader MUST personally read
+  and review all critical/important diffs (architecture, schemas/migrations, security,
+  data contracts, CI) before approving or merging.
 - Post the review summary as a `<!-- zima:review -->` comment (leader-only gh write).
 
 ## 5. Cross-repo tasks
