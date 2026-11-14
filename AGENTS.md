@@ -53,6 +53,7 @@ preamble from `.agents/skills/zima-leader/references/preamble.md`.
 | zima-leader | `.agents/skills/zima-leader/SKILL.md` | spawning any subagent; assigning review tiers; cross-repo tasks |
 | zima-sync | `.agents/skills/zima-sync/SKILL.md` | manifest edits, sync/update operations, adding repos |
 | zima-new-repo | `.agents/skills/zima-new-repo/SKILL.md` | onboarding a new repo into zima |
+| modern-web-guidance | `.agents/skills/modern-web-guidance/SKILL.md` | web-facing (panel/UI) implementation, analysis or review; using the guidance CLI |
 
 Docs referenced by the router instead of skills: Telegram → `docs/telegram/NOTIFICATIONS.md`
 (before sending ANY notification); runners → `docs/runners.md` (before any runner action);

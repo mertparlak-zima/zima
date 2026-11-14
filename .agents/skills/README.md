@@ -1,12 +1,14 @@
 # .agents/skills
 
-The three workspace-level skills (few by design - every skill costs startup context in
+The workspace-level skills (few by design - every skill costs startup context in
 harnesses that auto-load them):
 
 - `zima-leader/` - spawn/isolation/review-tier protocol (+ references: verbatim preamble,
   workspace-context block inserted into member repos).
 - `zima-sync/` - manifest hygiene, sync-vs-update semantics, verify triage.
 - `zima-new-repo/` - onboarding do/don't checklist.
+- `modern-web-guidance/` - modern web platform guides CLI wrapper (telemetry off,
+  web-facing scope, advisory only; adopted 2026-11-14).
 
 ## Contents / rules
 - One folder per skill with a `SKILL.md` (agentskills.io spec: six frontmatter fields;
