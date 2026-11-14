@@ -78,4 +78,7 @@ implementation before the rules-read record exists.
 
 Bootstrap exception: before zima's initial history/managed issue exists, keep that record
 in `.agent-tmp/<task>/task.md`, then preserve the final audit in `docs/` before commit.
-Creating or posting an issue still follows the user's authorization and is leader-only.
+Issue lifecycle actions (opening managed issues within scope, closing with evidence, posting
+status/review/evidence/note comments) and creating pull requests (`gh pr create`) are automated
+and pre-authorized without asking the user for confirmation or approval (decision 2026-11-10).
+PR merge (`gh pr merge`) remains the boundary requiring verification/approval.

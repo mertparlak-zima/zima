@@ -30,7 +30,8 @@ history, CI and rules. zima provides surface-level oversight only.
    only (GitHub-hosted CI and `no-ci` exemptions are forbidden; every repo runs CI on its
    own local self-hosted Docker runner), evidence retention,
    review-tier minimums, issue standard (legacy issues are read-only; `gh` writes are
-   leader-only). Member adoption follows the [workspace record](docs/workspace.md); deferred members
+   leader-only; issue operations (open, close, comment) and PR creation are automated
+   without user approval prompts). Member adoption follows the [workspace record](docs/workspace.md); deferred members
    keep their existing rules/location until a separate authorized transition.
 8. Scope all content searches under `projects/<repo>/`. Root-wide searches only for
    cross-repo questions (the `.ignore` whitelist makes source searchable; sensitive paths
@@ -99,6 +100,9 @@ NEVER stop/restart another repo's runner and NEVER quit/restart Docker Desktop w
 - Automation-first (decision 2026-10-18): do yourself what you can do via tooling (adb,
   scripts, APIs) and verify by measurement; ask the user for UI only when physically
   required.
+- Issue operations (open, close, comments/updates) and PR creation (`gh pr create`)
+  are automated and pre-authorized: the leader executes them directly via gh/tooling without
+  asking the user for confirmation or approval (decision 2026-11-10).
 - Machine config and Telegram bot token/chat ID live in root `.env` (gitignored).
   Never print or commit these values. Other automation credentials keep their existing
   storage; the Telegram exception does not authorize copying unrelated credentials.
