@@ -54,6 +54,8 @@ preamble from `.agents/skills/zima-leader/references/preamble.md`.
 | zima-sync | `.agents/skills/zima-sync/SKILL.md` | manifest edits, sync/update operations, adding repos |
 | zima-new-repo | `.agents/skills/zima-new-repo/SKILL.md` | onboarding a new repo into zima |
 | modern-web-guidance | `.agents/skills/modern-web-guidance/SKILL.md` | web-facing (panel/UI) implementation, analysis or review; using the guidance CLI |
+| drizzle | `.agents/skills/drizzle/SKILL.md` | reading/editing Drizzle ORM schemas/queries, `drizzle.config.ts`, or running `drizzle-kit` migrations |
+| opencode-cli | `.agents/skills/opencode-cli/SKILL.md` | delegating subagent roles to the local `opencode` CLI (`zai-coding-plan/glm-5.3` / `glm-5.3-flash`) to save primary quota |
 
 Docs referenced by the router instead of skills: Telegram → `docs/telegram/NOTIFICATIONS.md`
 (before sending ANY notification); runners → `docs/runners.md` (before any runner action);

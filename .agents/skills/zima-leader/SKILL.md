@@ -30,6 +30,11 @@ one-way (`docs/telegram/NOTIFICATIONS.md`).
 Parallelism comes from read-only exploration and cross-repo fan-out — never from parallel
 writers in one repo. Worktrees, if needed, are created by the LEADER only.
 
+These roles may be executed via the local `opencode` CLI on `zai-coding-plan/glm-5.3`
+(`glm-5.3-flash` for fast exploration) instead of in-session subagents to conserve primary
+session quota — mapping, models and the non-interactive invocation rule:
+[../opencode-cli/SKILL.md](../opencode-cli/SKILL.md). Role constraints above apply unchanged.
+
 ## 3. Spawn preamble (verbatim, every spawn)
 
 Copy from [references/preamble.md](references/preamble.md) — do not paraphrase. Fill the

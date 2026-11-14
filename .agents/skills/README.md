@@ -9,6 +9,12 @@ harnesses that auto-load them):
 - `zima-new-repo/` - onboarding do/don't checklist.
 - `modern-web-guidance/` - modern web platform guides CLI wrapper (telemetry off,
   web-facing scope, advisory only; adopted 2026-11-14).
+- `drizzle/` - official Drizzle ORM & Drizzle Kit (`1.0.0-rc.5`, rev 15) workflow skill
+  for `schema.ts`, `drizzle.config.ts`, migrations (`generate`/`push`/`pull`/`up`/`check`),
+  and `missing_hints` resolution (adopted 2026-11-14).
+- `opencode-cli/` - delegate subagent roles (explorer/worker/reviewer/acceptance) to the
+  local `opencode` CLI (v2.3.0) on `zai-coding-plan/glm-5.3` (`glm-5.3-flash` for fast read
+  tasks) to save primary-model quota (adopted 2026-11-14).
 
 ## Contents / rules
 - One folder per skill with a `SKILL.md` (agentskills.io spec: six frontmatter fields;
