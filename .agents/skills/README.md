@@ -12,6 +12,9 @@ harnesses that auto-load them):
 - `drizzle/` - official Drizzle ORM & Drizzle Kit (`1.0.0-rc.5`, rev 15) workflow skill
   for `schema.ts`, `drizzle.config.ts`, migrations (`generate`/`push`/`pull`/`up`/`check`),
   and `missing_hints` resolution (adopted 2026-11-14).
+- `cypress-author/`, `cypress-docs/`, `cypress-explain/`, `cypress-tap/` - official Cypress
+  AI toolkit (`cypress-io/ai-toolkit`) skills for authoring, explaining, documenting, and
+  live-inspecting Cypress E2E & Component tests in TypeScript (adopted 2026-11-15).
 - `opencode-cli/` - delegate subagent roles (explorer/worker/reviewer/acceptance) to the
   local `opencode` CLI (v2.3.0) on `zai-coding-plan/glm-5.3` (`glm-5.3-flash` for fast read
   tasks) to save primary-model quota (adopted 2026-11-14).
