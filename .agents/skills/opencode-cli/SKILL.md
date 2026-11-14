@@ -36,13 +36,15 @@ $null | opencode run -m zai-coding-plan/glm-5.3 --agent <build|explore|plan> --a
 - `--archived` keeps scripted sessions out of session lists.
 - `--title <task>` names the session for audit.
 
-For long prompts containing quotes/newlines, do NOT inline them. Write the prompt to
-`.agent-tmp/<task>/prompt.md` (in the relevant project dir) and pass its content:
+For prompts containing quotes, newlines, or `--flag` tokens, NEVER inline `(Get-Content -Raw ...)`
+(on Windows `opencode.cmd` passes arguments through `cmd.exe`, and any `--word` inside the
+prompt text is parsed as a CLI flag!). Instead, write the prompt to
+`.agent-tmp/<task>/prompt.md` and attach it via `-f` using an **ABSOLUTE path** (the
+background `opencode` server resolves `-f` relative to the workspace root, not the caller's
+`Set-Location`):
 
 ```powershell
-$null | opencode run -m zai-coding-plan/glm-5.3 --agent build --auto --archived --title <task> (Get-Content -Raw .agent-tmp/<task>/prompt.md)
-# or attach it as a file:
-$null | opencode run -m zai-coding-plan/glm-5.3 --agent build --auto --archived --title <task> -f .agent-tmp/<task>/prompt.md
+$null | opencode run -m zai-coding-plan/glm-5.3 --agent build --auto --archived --title <task> -f C:\Users\mertp\Desktop\projects\<repo>\.agent-tmp\<task>\prompt.md "Read and execute the attached prompt.md."
 ```
 
 ## 3. Role → agent mapping (zima-leader §2)
@@ -56,8 +58,7 @@ $null | opencode run -m zai-coding-plan/glm-5.3 --agent build --auto --archived 
 Worker example (prompt file lives in the target repo's `.agent-tmp`):
 
 ```powershell
-Set-Location C:\Users\mertp\Desktop\projects\<repo>
-$null | opencode run -m zai-coding-plan/glm-5.3 --agent build --auto --archived --title <task> (Get-Content -Raw .agent-tmp\<task>\prompt.md)
+$null | opencode run -m zai-coding-plan/glm-5.3 --agent build --auto --archived --title <task> -f C:\Users\mertp\Desktop\projects\<repo>\.agent-tmp\<task>\prompt.md "Read and execute the attached prompt.md."
 ```
 
 ## 4. Preamble and leader-only boundaries
