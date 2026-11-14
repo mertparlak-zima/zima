@@ -35,6 +35,15 @@ ask-first / never) for risk-carrying tasks. Metadata block: Owner, Category
 | Review | `<!-- zima:review -->` | `Review: Tier N because ...` + findings (finding/severity/file:line/suggestion, Conventional Comments labels: issue/suggestion/nitpick + (blocking)/(non-blocking)). Reviewer states `evidence_review` and `test_execution` SEPARATELY — a shell-less reviewer does not run tests. |
 | Note | `<!-- zima:note -->` | Reference/context notes (links, run URLs). |
 
+### Lifecycle & Comment authorization (no confirmation prompts)
+
+Issue lifecycle operations (opening managed issues within scope, closing issues with evidence,
+status/review/evidence/note comments) and creating pull requests (`gh pr create`) are
+pre-authorized automated operations. The leader executes them directly via `gh` / tooling.
+Agents MUST NOT ask the user for confirmation or approval before creating/closing issues,
+opening PRs, or posting issue comments/updates (e.g. asking "issue açayım mı?", "PR açayım mı?",
+"kapatayım mı?", "onaylıyor musunuz?").
+
 ## Workflow (tracked via status comments; no GitHub Projects)
 
 `OPEN (form valid) → IN-PROGRESS (status comment) → IN-REVIEW (review comment) →

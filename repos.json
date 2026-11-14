@@ -258,7 +258,7 @@
         "label": "heliboard-archive"
       },
       "name": "heliboard-archive",
-      "state_note": "P04-P22 merged (PRs #30-#49): COMPLETE local personal release - v4301 (4.3-archive.1) debug-keystore-signed and installed on the deployment phone (PR #49, ADR-018); P23-P25 cloud open (Supabase leaning), on-demand only.",
+      "state_note": "P04-P22 merged (PRs #30-#49): COMPLETE local personal release - v4301 (4.3-archive.1) debug-keystore-signed and installed on the deployment phone (PR #49, ADR-018); P23-P25 cloud open (Supabase leaning), on-demand only. Removed from local disk 2026-11-14 (user: project work complete); clone-on-demand member.",
       "ci_workflows": [
         "ci.yml"
       ],

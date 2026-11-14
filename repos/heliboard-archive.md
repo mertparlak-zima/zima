@@ -9,6 +9,7 @@
 - Stack: Android Kotlin Java HeliBoard fork with offline personal text archive
 - Default branch: `main`
 - Local state: clean
+- Disk: not cloned (removed 2026-11-14; clone-on-demand — `zima.ps1 clone heliboard-archive`)
 
 ## Entry documents
 

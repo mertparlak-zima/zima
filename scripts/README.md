@@ -21,6 +21,12 @@ creates a merge commit. See [workspace rules](../AGENTS.md).
   source fields and a DEFERRED reason. Normal verification explicitly reports excluded
   source/Git/docs/preamble checks; active members retain every existing check.
   Runner queries are scoped to each active container; excluded runners are not inspected.
+- Members are clone-on-demand: an absent or EMPTY member directory is a valid "not
+  cloned" state. `verify`/`status` report it as info, never an error — only
+  `local_state: irreplaceable` keeps a missing directory a STOP condition. `clone`
+  restores it (git clones into an existing empty directory); bulk `sync`/`update`
+  skip not-cloned members while explicit targets refuse with a clone hint. Present
+  members keep every existing check.
 - `tests/run-tests.ps1` + `tests/fixtures/` - fast in-memory manifest, runner rule,
   path, deferred-member and generated artifact checks. Run after ANY change to
   zima.ps1 or repos.schema.json.
