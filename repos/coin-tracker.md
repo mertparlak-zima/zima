@@ -6,8 +6,8 @@
 |---|---|
 | Dir | `projects/coin-tracker` |
 | GitHub | https://github.com/mertparlak-zima/coin-tracker |
-| Product | Coin Tracker — sandbox-only Binance Futures paper bot; Workers/D1 development foundation available, panel remains a Gea scaffold |
-| Stack | TypeScript, Gea + Vite, Vitest, Node 24; local Cloudflare Workers/D1 foundation. Browser engine and protected admin panel remain roadmap work |
+| Product | Coin Tracker — sandbox-only Binance Futures paper bot; Docker-first architecture (Hono API, BullMQ worker, Redis) with Gea panel |
+| Stack | TypeScript, Gea + Vite, Vitest, Cypress E2E, Hono, BullMQ, Redis, Drizzle ORM (SQLite), Docker, Node 24 |
 | Default branch | `main` |
 | Local state | clean |
 
@@ -16,19 +16,19 @@
 - [README](../projects/coin-tracker/README.md)
 - [AGENTS.md](../projects/coin-tracker/AGENTS.md) — product-plan routing + TDD, runner rules, independent-subagent acceptance
 - [Product plan](../projects/coin-tracker/docs/product-plan.md) — new bounded Futures paper-bot specification and dependency roadmap
-- [Development setup](../projects/coin-tracker/docs/development.md) — Free-tier limits, local Workers/D1 tests, hash compatibility and proposed custom subdomain
+- [Development setup](../projects/coin-tracker/docs/development.md) — Docker-first architecture, local SQLite/Drizzle, BullMQ worker, and Cypress E2E
 - [Plan review](../projects/coin-tracker/docs/plan-review-2026-10-26.md) — two independent review lenses, corrections and evidence
 - [GitHub roadmap resources](../projects/coin-tracker/docs/github/README.md) — generated milestone/issue map
 - [Repo skills](../projects/coin-tracker/.agents/skills/README.md) — development, engine and data/access rules; every functional change updates affected skills and docs
-- [Workspace Cloudflare MCP runbook](../docs/cloudflare.md) — shared connection/tool checks; product setup follows this repo's plan
+- [Workspace Cloudflare MCP runbook](../docs/cloudflare.md) — shared connection/tool checks; legacy Cloudflare resources decommissioned in #150 Phase A5
 - [Reset record](../projects/coin-tracker/docs/reset-2026-10-26.md) — 2026-10-26 cancellation audit (issues/milestones closed, delete/keep inventory, verification)
 - CLAUDE.md in-repo is a pointer stub to AGENTS.md (single-source pattern)
 
 ## CI and runner
 
-Workflow: `ci.yml` (typecheck/lint/test/build). Runner: `ct-docker-1`, label
+Workflow: `ci.yml` (typecheck/lint/format:check/test/build/test:e2e). Runner: `ct-docker-1`, label
 `coin-tracker` (compliant), lifecycle **leave-running** (owner decision 2026-10-07 —
-never quit Docker Desktop because of another repo's task). Compose in-repo:
+never quit Docker Desktop because of another repo's task). Image: `ct-ci-runner:latest` (Ubuntu 24.04 with Xvfb & Chromium libs for headless Cypress). Compose in-repo:
 `infra/runner/compose.yml`; start via `scripts/start-ci-runner.ps1` (verifies labels).
 2026-10-26: concurrency group + `pull_request: branches: [main]` added (the previously
 zima-filed ci.yml fix is DONE); fork guard and exact label set unchanged.
@@ -46,7 +46,8 @@ zima-filed ci.yml fix is DONE); fork guard and exact label set unchanged.
 
 - Fork-PR guard required on CI (self-hosted runner).
 - Runner stays running; do not "helpfully" stop it when idle.
-- 2026-10-26 takeover: owner authorized implementation in sandbox/paper mode only and Cloudflare Free tier only; #116 is the first foundation slice. Current development and deployment gates live in the linked development guide; no paid upgrade or real trading is authorized.
+- 2026-11-15 Phase A5 decommission: owner authorized complete decommissioning of Cloudflare resources (Issue #150). Workers `coin-tracker-dev`, `coin-tracker-auth-dev`, remote D1 databases, and `coin-tracker.zimastack.com` route have been deleted. Platform runs 100% on local Docker (Hono API, BullMQ worker, Redis, node:sqlite).
+- 2026-10-26 takeover: owner authorized implementation in sandbox/paper mode only; #116 was the first foundation slice. Current development and deployment gates live in the linked development guide; no paid upgrade or real trading is authorized.
 - 2026-10-26 reset: owner cancelled the product; all 15 open issues closed `not_planned`
   and milestones M2/M3/M5/M6/M7/M8 closed (owner override of legacy read-only rule —
   decision: `.local-state/decisions/coin-tracker-reset-2026-10-26.md`). Replacement plan was finalized with two independent reviews; milestones M9/M10 and issues #115–#130 are published. No real Binance orders,

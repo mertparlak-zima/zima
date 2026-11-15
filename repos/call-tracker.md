@@ -9,7 +9,8 @@
 | Product | **Daily Moods** (product name ≠ repo/dir name; package `dev.dailymoods.app`) |
 | Stack | Android/Kotlin single full-screen WebView app + local cellular-call METADATA collection (no audio); TS/Vitest tooling; Gradle unit tests |
 | Default branch | `main`; preserve live dirty/staged/worktree state; workspace housekeeping never authorizes resetting it |
-| Local state | **irreplaceable** — `private/` (AVD `avd-8`, keystores, personal build scripts) + `.planning/` acceptance evidence |
+| Local state | clean |
+| Disk | not cloned (clone-on-demand — `zima.ps1 clone call-tracker`) |
 
 ## Entry documents
 

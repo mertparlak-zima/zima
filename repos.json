@@ -90,9 +90,9 @@
       "name": "coin-tracker"
     },
     {
-      "state_note": "private/ (AVD avd-8, keystores, personal build scripts) + .planning/ acceptance evidence; product Telegram configuration is separate from workspace notifications",
+      "state_note": "Removed from local disk; clone-on-demand member.",
       "stack": "Android/Kotlin single full-screen WebView app with local cellular-call metadata collection (no audio); package dev.dailymoods.app",
-      "local_state": "irreplaceable",
+      "local_state": "clean",
       "product": "Daily Moods",
       "github": "https://github.com/mertparlak-zima/call-tracker.git",
       "skills_locations": [
