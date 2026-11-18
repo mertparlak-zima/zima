@@ -26,7 +26,7 @@ okunur.
    yalnızca köprü kurulmuşsa çalışır (kurulup kurulmadığı `adb devices` ile görünür).
 3. **Tırmanma kuralı (kullanıcı kararı 2026-10-16):** kablosuz bağlanma/kurtarma en fazla
    **3 deneme / ~5 dakika** denenir; başarısızsa agent durur ve kullanıcıdan **USB kablosu
-   takmasını ister** (Telegram/bildirim ya da aktif konuşma üzerinden tek cümle). Kendi
+   takmasını ister** (aktif konuşma üzerinden tek cümle; Telegram bildirimi yalnızca kullanıcı sohbette açıkça istemişse). Kendi
    kendine sınırsız retry yapılmaz, kabloya dokunulmaz.
 
 ## Ekran disiplini (kullanıcı kararı 2026-10-20)

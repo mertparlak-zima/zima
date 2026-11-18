@@ -22,6 +22,7 @@ gates and infrastructure. Current setup: [workspace.md](workspace.md).
 | 2026-11-04 | Validation CI workflows run on `pull_request` + `workflow_dispatch` only; no post-merge `push` validation run on `main`/default branch | owner decision; PR CI already validates the merge ref on single-concurrency local Docker runners - applied to `coin-tracker` 2026-11-04 and all remaining active validation repos 2026-11-05 (`drive-trace` exempt: its test-protected layered policy already dedupes post-merge full runs and keeps fail-closed direct-push verify) |
 | 2026-11-10 | Pre-authorized GitHub issue & PR workflows: issue open, close, status/review/evidence/note comments, and PR creation (`gh pr create`) execute directly via tooling without asking user confirmation | user instructions; eliminates unnecessary approval pauses for routine issue and PR workflows |
 | 2026-11-14 | Manifest members are clone-on-demand: an absent or empty member directory is a valid "not cloned" state; verify/status report info instead of failing; bulk sync/update skip it; explicit sync/update refuse with a clone hint; a missing irreplaceable directory remains STOP | user decision: locally finished projects may be deleted; zima must stay committable and verifiable regardless of which members are checked out |
+| 2026-11-18 | Telegram notifications require explicit user request in chat: never send Telegram notifications unless the user explicitly asks ("telegram bildirimi gönder" or similar) in the active conversation | user decision; eliminates unsolicited/automatic Telegram messages |
 
 ## Factual correction — 2026-10-20
 
@@ -98,3 +99,8 @@ profile holds the connection/grant; zima tracks the public endpoint and
 their actual tool inventory and account/resource access. Configuration and OAuth
 success alone do not certify a running session's tools or product permissions.
 Repo-local product rules and local Docker CI remain authoritative.
+
+## Telegram notifications require explicit user request — 2026-11-18
+
+User instruction: "telegram bildirim kuralını şöyle güncelle: user sohbette telegram bildirimi gönder demediği sürece göndermesin".
+Telegram notifications are no longer sent automatically upon task completion, CI outcomes, or blocking states. They are strictly opt-in per session: the leader sends a Telegram notification only if the user explicitly asks for it in the active chat (e.g. "telegram bildirimi gönder", "send telegram notification"). Unattended blocked work leaves a park file in `.local-state/parked/` without sending a Telegram notification unless requested.

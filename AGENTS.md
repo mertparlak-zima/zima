@@ -69,10 +69,12 @@ verify actual session tools/account access, not just saved configuration).
 
 ## Telegram notifications — one-way only
 
-Only the leader sends outbound messages with `scripts/telegram-notify.mjs`, reading
-the ignored root `.env`. No Telegram MCP server, listener, broker, session routing or
+Never send Telegram notifications unless the user explicitly requests it in the
+active chat (e.g. "telegram bildirimi gönder"). When authorized, only the leader
+sends outbound messages with `scripts/telegram-notify.mjs`, reading the ignored
+root `.env`. No Telegram MCP server, listener, broker, session routing or
 reply handling is used. Ask questions in the active conversation. For unattended blocked
-work, retain a park file and notify that a decision is needed in the main conversation.
+work, retain a park file in `.local-state/parked/`.
 Usage and message format: `docs/telegram/NOTIFICATIONS.md`.
 
 ## CI runners — summary

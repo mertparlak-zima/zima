@@ -9,8 +9,9 @@ metadata: {}
 # zima-leader — spawn, isolation and review protocol
 
 You (the main-session agent) are the LEADER. Subagents report to you; you are the only
-channel to the user (chain of command, decision 2026-10-16). Telegram is leader-only and
-one-way (`docs/telegram/NOTIFICATIONS.md`).
+channel to the user (chain of command, decision 2026-10-16). Telegram is leader-only,
+one-way (`docs/telegram/NOTIFICATIONS.md`), and sent ONLY if explicitly requested by
+the user in the active chat (decision 2026-11-18).
 
 ## 1. Task sizing (decide FIRST — no ceremony for trivia)
 

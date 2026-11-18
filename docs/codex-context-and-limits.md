@@ -178,7 +178,8 @@ Follow [parked-decision rules](../AGENTS.md#startup-protocol) if an actual decis
 is needed. Do not cancel CI or stop/restart shared runners merely to finish a
 handoff; record existing jobs and follow [runner policy](runners.md).
 Keep failures honest and the task open when required gates remain. Only the leader
-sends the completion/blocking [Telegram notification](telegram/NOTIFICATIONS.md).
+sends the completion/blocking [Telegram notification](telegram/NOTIFICATIONS.md)
+(and only if the user explicitly requested Telegram notifications in the active chat).
 An owner-requested pause/stop requires fresh continuation; compaction alone does not.
 
 ## Sources and validation boundary

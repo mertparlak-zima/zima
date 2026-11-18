@@ -1,9 +1,11 @@
 # Telegram notifications - outbound only
 
-Only the leader sends concise notifications. There is no incoming Telegram path:
-no broker, polling, webhook, server, session mailbox, question or reply tool.
-Use the active agent conversation for questions. Unattended blocked work may
-leave a durable park file and send a one-way notification.
+Never send Telegram notifications unless the user explicitly instructs it in the
+active chat (e.g. "telegram bildirimi gönder"). When authorized, only the leader
+sends concise notifications. There is no incoming Telegram path: no broker, polling,
+webhook, server, session mailbox, question or reply tool. Use the active agent
+conversation for questions. Unattended blocked work leaves a durable park file in
+`.local-state/parked/`; do NOT send a notification unless requested by the user.
 
 ## Configuration
 
@@ -28,8 +30,14 @@ generic and never prints Telegram's response or a token-bearing request URL.
 
 ## When and what to send
 
-Notify after verified completion of long implementation/build/test/deployment
-work, or when blocked and user input is needed. No trivial/intermediate spam.
+Send Telegram notifications ONLY when the user explicitly asks for them in the
+active conversation (e.g. "telegram bildirimi gönder", "send telegram notification").
+Never send automatic or unsolicited notifications upon task completion, CI results,
+or when blocked.
+
+When explicitly authorized by the user in chat, notify after verified completion of
+long implementation/build/test/deployment work, or when blocked and user input is
+needed. No trivial/intermediate spam.
 Messages are English, at most six lines; Next and Blocker are mutually exclusive:
 
 ```text
