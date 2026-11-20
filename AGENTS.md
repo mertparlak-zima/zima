@@ -65,7 +65,9 @@ quota and handoff → [docs/codex-context-and-limits.md](docs/codex-context-and-
 (when tracking these metrics or preparing a limit-driven handoff); physical test
 phone → `docs/devices.md` (before any device/adb operation); Cloudflare/MCP →
 [docs/cloudflare.md](docs/cloudflare.md) (before Cloudflare account, Worker/D1 or deploy operations;
-verify actual session tools/account access, not just saved configuration).
+verify actual session tools/account access, not just saved configuration); web service
+exposure → [docs/web-services.md](docs/web-services.md) (proxied Cloudflare A record + Coolify
+HTTPS domain; before opening any service to the internet).
 
 ## Telegram notifications — one-way only
 

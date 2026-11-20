@@ -113,4 +113,5 @@ or that all product permissions exist. Review and verification evidence belongs 
 - [Official Codex MCP configuration](https://developers.openai.com/codex/mcp/)
 - [Wrangler installation and updates](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
 - [Workspace router](../AGENTS.md) · [documentation index](README.md) · [workspace README](../README.md)
+- [Web service exposure](web-services.md) — proxied DNS record + Coolify domain workflow for new public services.
 - [Coin-tracker card](../repos/coin-tracker.md) — first consumer; application rules remain in its repo.

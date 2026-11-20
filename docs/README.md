@@ -7,6 +7,7 @@ duplicating. Link-only for repo content (cards under `repos/` carry those links)
 - `runners.md` - runner policy; its registry table is GENERATED from repos.json.
 - `issues.md` - task & issue standard (form marker, comment types, workflow, milestones).
 - [cloudflare.md](cloudflare.md) - official MCP/OAuth setup, live tool checks and account/deployment workflow across sessions.
+- [web-services.md](web-services.md) - opening a new public web service: proxied Cloudflare A record + Coolify HTTPS domain; which services need a domain.
 - [codex-context-and-limits.md](codex-context-and-limits.md) - separate thread context from account quota; native read-only checks and successor handoff.
 - `local-state.md` - irreplaceable local data inventory + backup/restore policy.
 - `decisions.md` - dated workspace decision log (append-only).
