@@ -32,7 +32,7 @@ first. For Cloudflare account access and MCP/OAuth tooling see
 |---|---|
 | Site or API opened to the outside | Proxied A record + Coolify HTTPS domain |
 | Postgres, Redis or a worker used only by other containers | No DNS record, no public port — stays on the Coolify internal network |
-| Coolify admin panel | Stays on the existing tunnel; do not touch it when adding new apps |
+| Coolify admin panel | Stays on the existing tunnel/Access application (`admin.zimastack.com`). For automated GitHub auto-deploy webhooks, a more specific Cloudflare Access self-hosted application (`Coolify GitHub Webhook` on `/webhooks/source/github/events/manual`) with a `bypass` policy allows GitHub event delivery while keeping all other panel endpoints behind authentication. |
 
 ## Notes
 

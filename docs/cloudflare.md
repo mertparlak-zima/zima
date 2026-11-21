@@ -106,6 +106,17 @@ This observation is a dated setup record, not a guarantee that a grant remains v
 or that all product permissions exist. Review and verification evidence belongs to
 [zima issue #2](https://github.com/mertparlak-zima/zima/issues/2).
 
+## Verified state and Zero Trust Access — 2026-11-21
+
+1. **API Token & Account Scope:**
+   - Active Cloudflare user token configured in `~/.gemini/config/mcp_config.json`.
+   - Verified access to Account `2b63a0ef24f8731f8dc08cddbcd41842` ("Mertparlak123@hotmail.com's Account") and Zone `7726c5f8c4f087a1b497b259aa2b3d09` (`zimastack.com`).
+   - Token grants Account and Zone management but lacks `user:read`, which causes the generic MCP handshake at `https://mcp.cloudflare.com/mcp` to return HTTP 403 `insufficient_scope`. Direct Cloudflare REST API management on account and zone resources works normally.
+
+2. **Zero Trust Access Applications for Coolify:**
+   - `admin` (`admin.zimastack.com`, self-hosted): Protected by Cloudflare Access OTP policy.
+   - `Coolify GitHub Webhook` (`admin.zimastack.com/webhooks/source/github/events/manual`, self-hosted): Configured with a `bypass` policy (`decision: bypass`, `include: everyone`). Because Cloudflare Access matches more specific subpaths first, incoming GitHub webhook deliveries bypass Cloudflare Access authentication and reach Coolify directly, while all other admin panel paths remain protected.
+
 ## Sources and related documents
 
 - [Cloudflare's official MCP servers](https://developers.cloudflare.com/agents/model-context-protocol/cloudflare/servers-for-cloudflare/)
