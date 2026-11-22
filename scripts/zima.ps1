@@ -189,6 +189,24 @@ function Test-RequiredLines {
  if(!(Test-Path -LiteralPath $Path)){return "missing file: $Path"};$lines=@(Get-Content -LiteralPath $Path -Encoding UTF8|ForEach-Object{$_.TrimEnd()})
  foreach($l in $Required){if($lines -cnotcontains $l){"required exact line absent in $Path : $l"}}
 }
+function Test-ZimaRunnerDockerfile {
+ param([string]$Content,[string]$RepoName)
+ $err=@()
+ $norm=$Content.Replace("`r`n","`n").Replace("`r","`n") -replace "\\\n",' '
+ $lines=@($norm -split "`n"|Where-Object{$_.Trim() -and !$_.TrimStart().StartsWith('#')})
+ foreach($line in $lines){
+  $t=$line.Trim()
+  if($t -imatch '^FROM\s+([^\s]+)'){
+   $baseImage=$Matches[1]
+   if($baseImage -imatch '(^|[/:])([a-z0-9-]+)-ci-runner(:|$)'){$err+="repo ${RepoName}: runner Dockerfile must not extend sibling runner image $baseImage"}
+  }
+  if($t -imatch '\bapt-get\b[\s\S]*\binstall\b'){
+   $stripped=[regex]::Replace($t,'--mount=type=cache,[^\s]+','')
+   if($stripped -imatch '(?:^|\s)(?:nodejs|npm)(?:\s|=|$)'){$err+="repo ${RepoName}: runner Dockerfile must not install apt nodejs/npm packages (use actions/setup-node)"}
+  }
+ }
+ return $err
+}
 $script:D19Exceptions=@('.git','.agent-tmp','.local-state','.local-archives','artifacts','.jarvis-telegram-mcp','projects','.idea','.claude','.vscode','node_modules')
 function Test-FolderReadmes {
  param([string]$ZimaRoot)
@@ -336,7 +354,7 @@ function Invoke-ZimaVerify {
   $repoRoot=Get-ZimaSafePath $ZimaRoot $r['path'];$wfDir=Get-ZimaSafePath $repoRoot '.github/workflows'
   if((@($r['quirks']) -contains 'inherited-github-hosted-ci-awaiting-audit') -and !(Test-Path -LiteralPath (Join-Path $wfDir 'ci.yml'))){$info.Add("pending local runner workflow migration: $($r['name'])")}
   elseif(!($Pending -and !(Test-Path -LiteralPath $wfDir))){
-   if($null -ne $r['runner'] -and ![IO.Path]::IsPathRooted($r['runner']['compose'])){$compPath=Get-ZimaSafePath $repoRoot $r['runner']['compose'];if(!(Test-Path -LiteralPath $compPath)){$errors+="repo $($r['name']): missing runner compose $($r['runner']['compose'])"}}
+   if($null -ne $r['runner'] -and ![IO.Path]::IsPathRooted($r['runner']['compose'])){$compPath=Get-ZimaSafePath $repoRoot $r['runner']['compose'];if(!(Test-Path -LiteralPath $compPath)){$errors+="repo $($r['name']): missing runner compose $($r['runner']['compose'])"}else{$dfDir=([IO.Path]::GetDirectoryName($r['runner']['compose']) -replace '\\','/');$dfRel=if($dfDir){"$dfDir/Dockerfile"}else{'Dockerfile'};$dfPath=Get-ZimaSafePath $repoRoot $dfRel;if(Test-Path -LiteralPath $dfPath -PathType Leaf){$errors+=@(Test-ZimaRunnerDockerfile (Get-Content -LiteralPath $dfPath -Raw -Encoding UTF8) $r['name'])}}}
    if(!(Test-Path -LiteralPath $wfDir -PathType Container)){$errors+="repo $($r['name']): missing .github/workflows directory"}else{
     foreach($wf in $r['ci_workflows']){$wfPath=Get-ZimaSafePath $wfDir $wf;if(!(Test-Path -LiteralPath $wfPath -PathType Leaf)){$errors+="repo $($r['name']): missing declared workflow $wf";continue};$roLines=@(Get-Content -LiteralPath $wfPath -Encoding UTF8|Where-Object{$_ -notmatch '^\s*#' -and $_ -match '^\s*runs-on\s*:'});if($roLines.Count -eq 0){$errors+="repo $($r['name']): workflow $wf has no runs-on declaration"};foreach($ro in $roLines){if($ro -match '(?i)\b(ubuntu|windows|macos)-(latest|\d[\w.-]*)' -or $ro -notmatch '(?i)\bself-hosted\b' -or $ro -notmatch '(?i)\bdocker\b'){$errors+="repo $($r['name']): workflow $wf must use self-hosted docker runner (GitHub-hosted runs-on forbidden)";break}}}
     foreach($f in Get-ChildItem -LiteralPath $wfDir -File -Force|Where-Object{$_.Name -match '\.ya?ml$'}){if(@($r['ci_workflows']) -cnotcontains $f.Name){$errors+="repo $($r['name']): undeclared workflow file $($f.Name)"}}

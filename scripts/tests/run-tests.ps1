@@ -42,5 +42,11 @@ $bytes=[IO.File]::ReadAllBytes((Join-Path $root 'scripts/zima.ps1'))
 $text=[Text.Encoding]::UTF8.GetString($bytes)
 Assert ($bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191 -and !$text.Replace("`r`n",'').Contains("`n")) 'zima.ps1 preserves UTF-8 BOM and CRLF'
 
+Assert (@(Test-ZimaRunnerDockerfile "FROM dt-ci-runner:latest`nRUN echo ok" 'probe').Count -ge 1) 'runner Dockerfile rejects sibling base image'
+Assert (@(Test-ZimaRunnerDockerfile "FROM ubuntu:24.04`nRUN apt-get update && apt-get install -y \`n  git nodejs npm" 'probe').Count -ge 1) 'runner Dockerfile rejects multiline apt nodejs/npm'
+Assert (@(Test-ZimaRunnerDockerfile "FROM ubuntu:24.04`nRUN --mount=type=cache,target=/var/cache/apt apt-get update && apt-get install -y --no-install-recommends git curl postgresql" 'probe').Count -eq 0) 'runner Dockerfile accepts standalone ubuntu image'
+$ctDf=Join-Path $root 'projects/coin-tracker/infra/runner/Dockerfile'
+if(Test-Path -LiteralPath $ctDf){Assert (@(Test-ZimaRunnerDockerfile (Get-Content -LiteralPath $ctDf -Raw -Encoding UTF8) 'coin-tracker').Count -eq 0) 'coin-tracker runner Dockerfile passes policy'}
+
 Write-Host "RESULT: $($script:Count) assertions; $($script:Failures) failures"
 if($script:Failures){exit 1};exit 0

@@ -53,7 +53,7 @@
     },
     {
       "state_note": null,
-      "stack": "TypeScript Gea Vite scaffold; Binance Futures paper-bot plan (Workers/D1 planned); Vitest; Node 24; self-hosted CI",
+      "stack": "TypeScript, Gea + Vite, Vitest, Cypress E2E, Hono, BullMQ, Redis, Drizzle ORM (PostgreSQL 17 + worker node:sqlite WAL), Docker, Node 24, self-hosted CI",
       "local_state": "clean",
       "product": "Coin Tracker",
       "github": "https://github.com/mertparlak-zima/coin-tracker.git",

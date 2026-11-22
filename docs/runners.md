@@ -126,6 +126,23 @@ inspect or operate that member's runner/jobs until its authorized reactivation.
   Discipline note (T3 finding): direct pushes to main now get NO CI anywhere — use
   PRs or a manual `workflow_dispatch` run after unavoidable direct pushes.
 
+## Runner Dockerfile standard (standalone, fast, cache-friendly)
+
+Every repo's `infra/runner/Dockerfile` must build fast, reproducibly, and without
+hidden cross-repo image dependencies:
+
+- **Standalone public base image (`ubuntu:24.04`):** NEVER use `FROM` against another
+  repository's local runner image (e.g., `dt-ci-runner:latest` or `*-ci-runner`).
+- **NEVER install `apt` `nodejs` or `npm` packages:** On Ubuntu 24.04, Debian's `nodejs`/
+  `npm` packages pull ~500 `node-*` packages and can stall WSL2 `dpkg` layer assembly
+  for 45+ minutes. CI workflows provision pinned Node toolchains via `actions/setup-node`
+  (`.nvmrc`), while the GitHub Actions runner binary ships its own embedded runtime.
+- **Fast `dpkg` + BuildKit cache mounts + cache layering:** Enable `force-unsafe-io`
+  (`/etc/dpkg/dpkg.cfg.d/99-docker-unsafe-io`), pass `--no-install-recommends`, mount
+  BuildKit apt caches (`--mount=type=cache,target=/var/cache/apt` and
+  `target=/var/lib/apt/lists`), and separate stable OS/runner-binary layers from
+  browser/E2E and database/service layers. Enforced by `zima.ps1 verify`.
+
 ## Registry (GENERATED)
 
 <!-- BEGIN GENERATED RUNNER REGISTRY -->
