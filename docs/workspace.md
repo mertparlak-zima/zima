@@ -6,6 +6,11 @@ directly in VS Code: Explorer has one Zima root and Source Control lists all eig
 repositories. The shared [settings](../.vscode/README.md) enable Git discovery to depth
 two. Member repositories remain independent Git boundaries.
 
+When a new member needs a hosted web service, use the
+[Coolify publishing and backup runbook](web-services.md) for its Git source,
+domain, access, deploy and storage setup. Keep the concrete application
+configuration in the member repo.
+
 Workspace notifications use `scripts/telegram-notify.mjs`. It reads the Telegram token
 and chat ID from ignored root `.env`, sends one outbound message, and exits. No workspace
 MCP server, listener, broker or reply handling is used. See

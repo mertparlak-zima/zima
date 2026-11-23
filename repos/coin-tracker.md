@@ -17,6 +17,7 @@
 - [AGENTS.md](../projects/coin-tracker/AGENTS.md) — product-plan routing + TDD, runner rules, independent-subagent acceptance
 - [Product plan](../projects/coin-tracker/docs/product-plan.md) — new bounded Futures paper-bot specification and dependency roadmap
 - [Development setup](../projects/coin-tracker/docs/development.md) — Docker-first architecture, local PostgreSQL 17/Drizzle, BullMQ worker, and Cypress E2E
+- [VPS publishing](../projects/coin-tracker/docs/coolify.md) and [backup and recovery](../projects/coin-tracker/docs/coolify-backups.md) — Coin Tracker's Coolify deployment, timers and restore verification
 - [Plan review](../projects/coin-tracker/docs/plan-review-2026-10-26.md) — two independent review lenses, corrections and evidence
 - [GitHub roadmap resources](../projects/coin-tracker/docs/github/README.md) — generated milestone/issue map
 - [Repo skills](../projects/coin-tracker/.agents/skills/README.md) — development, engine and data/access rules; every functional change updates affected skills and docs
