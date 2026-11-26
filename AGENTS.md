@@ -67,7 +67,8 @@ phone → `docs/devices.md` (before any device/adb operation); Cloudflare/MCP �
 [docs/cloudflare.md](docs/cloudflare.md) (before Cloudflare account, Worker/D1 or deploy operations;
 verify actual session tools/account access, not just saved configuration); web service
 exposure → [docs/web-services.md](docs/web-services.md) (proxied Cloudflare A record + Coolify
-HTTPS domain; before opening any service to the internet).
+HTTPS domain; before opening any service to the internet); VPS host security, firewall, SSH, TLS and
+maintenance → [docs/vps/README.md](docs/vps/README.md) (before any VPS/server maintenance or security change).
 
 ## Telegram notifications — one-way only
 

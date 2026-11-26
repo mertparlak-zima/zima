@@ -104,3 +104,7 @@ Repo-local product rules and local Docker CI remain authoritative.
 
 User instruction: "telegram bildirim kuralını şöyle güncelle: user sohbette telegram bildirimi gönder demediği sürece göndermesin".
 Telegram notifications are no longer sent automatically upon task completion, CI outcomes, or blocking states. They are strictly opt-in per session: the leader sends a Telegram notification only if the user explicitly asks for it in the active chat (e.g. "telegram bildirimi gönder", "send telegram notification"). Unattended blocked work leaves a park file in `.local-state/parked/` without sending a Telegram notification unless requested.
+
+## VPS runbook documented in repo - 2026-11-26
+
+The owner's zimastack-vps-guvenlik-ve-bakim-runbook.md (ZimaStack VPS security/maintenance baseline of 2026-11-26) was split losslessly into [vps/](vps/README.md) so agents understand the server hosting the member projects; the loose root file was removed. The docs contain real IPs/fingerprints (no secrets): keep the repo private.

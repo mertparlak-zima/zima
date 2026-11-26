@@ -9,6 +9,7 @@ duplicating. Link-only for repo content (cards under `repos/` carry those links)
 - [cloudflare.md](cloudflare.md) - official MCP/OAuth setup, live tool checks and account/deployment workflow across sessions.
 - [web-services.md](web-services.md) - new web repository onboarding, Coolify deploys, Cloudflare access and backup design.
 - [codex-context-and-limits.md](codex-context-and-limits.md) - separate thread context from account quota; native read-only checks and successor handoff.
+- [vps/](vps/README.md) - ZimaStack VPS security, infrastructure and maintenance runbook (Contabo, Docker, Coolify, Traefik, Cloudflare); private-repo only.
 - `local-state.md` - irreplaceable local data inventory + backup/restore policy.
 - `decisions.md` - dated workspace decision log (append-only).
 - [workspace.md](workspace.md) - current six-project layout, setup and retained recovery evidence.
